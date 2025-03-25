@@ -19,6 +19,7 @@ redis = "^5.2.1"
 django-extensions = "^3.2.3"
 python-json-logger = "^3.3.0"
 djangorestframework-simplejwt = "^5.5.0"
+django-cors-headers = "^4.7.0"
 
 
 [build-system]
