@@ -1,4 +1,3 @@
 from django.db import models
 
-
-class Shop(models.Model):
+# Create your models here.
