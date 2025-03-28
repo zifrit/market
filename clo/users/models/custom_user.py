@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
-from context.models import TimeStampMixin, CreatorMixin
-
+from context.models import TimeStampMixin
+from storages.backends.s3boto3 import S3Boto3Storage
 
 class CustomUserManager(UserManager):
 
@@ -46,3 +46,21 @@ class CustomUser(AbstractUser, TimeStampMixin):
         if self.get_full_name():
             return self.get_full_name()
         return self.username
+
+def user_image_upload_path(instance, filename):
+    return f"users/{instance.user.first_name}-{instance.user.last_name}-{instance.gender}-{instance.age}/{filename}"
+
+
+class UserData(TimeStampMixin):
+    class GenderType(models.TextChoices):
+        MALE = 'MALE', 'Мужчина'
+        FEMALE = 'FEMALE', 'Женщина'
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, verbose_name='Пользователь')
+    gender = models.CharField(max_length=10, choices=GenderType.choices, blank=True, null=True)
+    age = models.PositiveSmallIntegerField(verbose_name='Возраст', blank=True, null=True)
+    image = models.ImageField(
+        upload_to=user_image_upload_path,  # путь в S3
+        storage=S3Boto3Storage(),
+        null=True,
+        blank=True
+    )

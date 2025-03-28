@@ -2,7 +2,12 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from users.models import CustomUser, VerificationCode
+from users.models import CustomUser, VerificationCode, UserData
+
+
+class UserDataInline(admin.StackedInline):
+    model = UserData
+    can_delete = False
 
 
 @admin.register(CustomUser)
@@ -18,6 +23,7 @@ class AdminCustomUser(UserAdmin):
     list_display_links = ['id', 'username']
     list_editable = ['is_active',
                      'is_staff']
+    inlines = (UserDataInline,)
     ordering = ['id', 'username']
     fieldsets = (
         (None, {
