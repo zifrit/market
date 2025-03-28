@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 'ordering': ['id'],
             },
             managers=[
-                ('objects', users.models.CustomUserManager()),
+                ('objects', users.models.custom_user.CustomUserManager()),
             ],
         ),
     ]
