@@ -46,6 +46,8 @@ BASE_APPS = [
 
 PROJECT = [
     'shop.apps.ShopConfig',
+    'context.apps.ContextConfig',
+    'users.apps.UsersConfig',
 
 ]
 
@@ -54,6 +56,7 @@ LIBRARY_APP = [
     'django_filters',
     'django_extensions',
     'corsheaders',
+    'storages',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
 
@@ -102,7 +105,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'clo.wsgi.application'
-
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -128,6 +131,21 @@ DATABASES = {
         }
     }
 }
+
+
+# AWS настройки
+AWS_ACCESS_KEY_ID = 'BA0XFFRAJYE7FKFV4U8J'
+AWS_SECRET_ACCESS_KEY = 'w3xhMBodCmoL9oGxcoxvuBAQeHMNW5V0eooyT1dv'
+AWS_STORAGE_BUCKET_NAME = '4467e3c1-clo-test'
+AWS_S3_ENDPOINT_URL = 'https://s3.twcstorage.ru'
+AWS_S3_REGION_NAME = 'ru-1'  # или ваш регион
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_ADDRESSING_STYLE = "virtual"
+AWS_S3_SIGNATURE_VERSION = "s3"
+
+# Настройка storages
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 
 # Password validation
