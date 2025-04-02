@@ -11,6 +11,7 @@ class Product(TimeStampMixin, CreatorMixin):
     quantity = models.PositiveIntegerField(verbose_name='Количество', blank=True, null=True)
     color = models.ForeignKey('Colors', verbose_name='Цвет', blank=True, null=True, on_delete=models.SET_NULL)
     brands = models.ForeignKey('Brands', verbose_name='Бренды', blank=True, null=True, on_delete=models.SET_NULL)
+    category = models.ForeignKey('Categories', verbose_name='Категория', blank=True, null=True, on_delete=models.SET_NULL)
     sizes = models.ManyToManyField('Sizes', verbose_name='Размеры', blank=True)
 
     class Meta:
@@ -39,6 +40,16 @@ class Brands(TimeStampMixin, CreatorMixin):
         db_table = 'clo_brands'
         verbose_name = 'Brand'
         verbose_name_plural = 'Brands'
+
+
+class Categories(TimeStampMixin, CreatorMixin):
+    name = models.CharField(verbose_name='Название', blank=True, null=True, max_length=255)
+
+    class Meta:
+        ordering = ['created_at', 'id']
+        db_table = 'clo_categories'
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
 
 
 class Sizes(TimeStampMixin, CreatorMixin):
