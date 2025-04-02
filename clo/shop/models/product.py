@@ -9,9 +9,9 @@ class Product(TimeStampMixin, CreatorMixin):
     description = models.TextField(verbose_name='Описание', blank=True, null=True)
     enabled = models.BooleanField(verbose_name='Включен', default=True)
     quantity = models.PositiveIntegerField(verbose_name='Количество', blank=True, null=True)
-    color = models.ForeignKey('Colors', verbose_name='Цвет', blank=True, null=True, on_delete=models.SET_NULL)
+    color = models.ManyToManyField('Colors', verbose_name='Цвет', blank=True)
     brands = models.ForeignKey('Brands', verbose_name='Бренды', blank=True, null=True, on_delete=models.SET_NULL)
-    category = models.ManyToManyField('Categories', verbose_name='Категория', blank=True)
+    category = models.ForeignKey('Categories', verbose_name='Категория', blank=True, null=True, on_delete=models.SET_NULL)
     sizes = models.ManyToManyField('Sizes', verbose_name='Размеры', blank=True)
 
     class Meta:
