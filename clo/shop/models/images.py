@@ -7,6 +7,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 class ProductImages(TimeStampMixin, CreatorMixin):
     name = models.CharField(max_length=200, verbose_name='Название')
     product = models.ForeignKey('shop.Product', on_delete=models.CASCADE, verbose_name='Продукт', related_name='images', blank=True, null=True)
+    color = models.ForeignKey('shop.Colors', on_delete=models.CASCADE, verbose_name='Цвет', related_name='images', blank=True, null=True)
     image = models.FileField(
         upload_to='products/images/%Y/%m/%d/',  # путь в S3
         storage=S3Boto3Storage(),
