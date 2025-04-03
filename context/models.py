@@ -22,7 +22,7 @@ class TimeStampMixin(CreateUpdateTimeMixin, DeleteTimeMixin):
 
 
 class CreatorMixin(models.Model):
-    creator = models.ForeignKey('users.CustomUser',on_delete=models.PROTECT, verbose_name='Создатель',
+    creator = models.ForeignKey('users.CustomUser', on_delete=models.PROTECT, verbose_name='Создатель',
                                 null=True, blank=True)
     class Meta:
         abstract = True

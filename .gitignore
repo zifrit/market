@@ -105,7 +105,7 @@ celerybeat.pid
 
 # Environments
 utils/asku_back.ini
-clo/.env
+.env
 .venv
 env/
 venv/
