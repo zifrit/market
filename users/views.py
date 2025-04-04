@@ -1,10 +1,12 @@
 from rest_framework.permissions import AllowAny
-from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework import generics, mixins
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import PhoneNumberSerializer, VerifyCodeSerializer
+from users.models import CustomUser
+from .serializers import PhoneNumberSerializer, VerifyCodeSerializer, CustomUserSerializer
 
 class RequestCodeView(generics.GenericAPIView):
     permission_classes = (AllowAny,)
@@ -37,3 +39,10 @@ class VerifyCodeView(generics.GenericAPIView):
                 "access": str(refresh.access_token) # Access-токен
             }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserViewSet(mixins.RetrieveModelMixin,
+                   mixins.ListModelMixin,
+                   GenericViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
