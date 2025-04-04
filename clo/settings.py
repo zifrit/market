@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(os.path.join(BASE_DIR, '../clo_app/.env'))
+load_dotenv(os.path.join(BASE_DIR, './.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", 'localstart')
 DEBUG = os.environ.get("DEBUG", False) == 'True'
 SWAGGER = os.environ.get("SWAGGER", False) == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "0.0.0.0", "localhost"]
 
 
 # Application definition
@@ -104,7 +104,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'clo_.wsgi.application'
+WSGI_APPLICATION = 'clo.wsgi.application'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # Database
@@ -146,6 +146,29 @@ AWS_S3_SIGNATURE_VERSION = "s3"
 
 # Настройка storages
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 
 
 # Password validation
