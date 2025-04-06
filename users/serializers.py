@@ -12,12 +12,12 @@ class PhoneNumberSerializer(serializers.Serializer):
 
     def save(self):
         phone_number = self.validated_data['phone_number']
-        user, created = CustomUser.objects.get_or_create(phone=phone_number)
+        user, created = CustomUser.objects.get_or_create(phone=phone_number, username=phone_number)
         code = ''.join([str(random.randint(0, 9)) for _ in range(6)])  # Генерация кода
         VerificationCode.objects.create(user=user, code=code)
         # Здесь должна быть логика отправки SMS (например, через Twilio)
         print(f"SMS code for {phone_number}: {code}")  # Для теста выводим в консоль
-        return user
+        return code
 
 class VerifyCodeSerializer(serializers.Serializer):
     phone_number = serializers.CharField(max_length=15)

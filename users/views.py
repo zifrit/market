@@ -15,8 +15,8 @@ class RequestCodeView(generics.GenericAPIView):
     def post(self, request):
         serializer = PhoneNumberSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Код отправлен"}, status=status.HTTP_200_OK)
+            code = serializer.save()
+            return Response({"message": "Код отправлен", "code": code}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class VerifyCodeView(generics.GenericAPIView):

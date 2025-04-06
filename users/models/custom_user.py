@@ -27,7 +27,7 @@ class CustomUser(AbstractUser, TimeStampMixin):
     last_name = models.CharField(max_length=255, verbose_name='Имя', blank=True)
     middle_name = models.CharField(max_length=255, verbose_name='Отчество', blank=True)
     fio = models.CharField(max_length=255, verbose_name='ФИО', blank=True)
-    email = models.EmailField(verbose_name='Майл', unique=True)
+    email = models.EmailField(verbose_name='Майл', unique=True,blank=True, null=True)
     phone = models.CharField(max_length=18, unique=True, verbose_name='Номер телефона')
 
     objects = CustomUserManager()
