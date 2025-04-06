@@ -15,3 +15,8 @@ make downv
 ```
 make live
 ```
+
+### Свагер документация доступна по адресу
+```
+http://0.0.0.0/api/schema/swagger/
+```
