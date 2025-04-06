@@ -13,8 +13,8 @@ services:
              poetry run uvicorn clo.asgi:application --host 0.0.0.0 --port 8000"
     depends_on:
       - db
-    ports:
-      - "8000:8000"
+#    ports:
+#      - "8000:8000"
     volumes:
       - .:/app
       - ./static:/app/staticfiles
@@ -36,6 +36,19 @@ services:
       timeout: 10s
       retries: 5
 
+  nginx:
+    build:
+      context: ./nginx
+    container_name: clo_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - django
+    volumes:
+      - ./static:/app/static
+      - ./media:/app/media
 
 volumes:
   postgres_data:
+  static:
+  media:
