@@ -34,3 +34,9 @@ class CategorySerializer(BaseSerializer):
     class Meta:
         model = Categories
         exclude = ['delete']
+
+
+class ColorsSerializer(BaseSerializer):
+    class Meta:
+        model = Colors
+        exclude = ['delete']
