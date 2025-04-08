@@ -69,4 +69,4 @@ class ColorsSerializer(BaseSerializer):
 class ShopSerializer(BaseSerializer):
     class Meta:
         model = Shop
-        exclude = ['delete','is_active']
+        exclude = ['delete','is_active','updated_at']
