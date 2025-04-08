@@ -12,7 +12,8 @@ router.register('brands', BrandsViewSet)
 router.register('sizes', SizesViewSet)
 router.register('colors', ColorsViewSet)
 router.register('shops', ShopViewSet)
-# router.register('images', ProductImagesViewSet)
+
 urlpatterns = [
     path('', include(router.urls)),
+    path('images/', ProductImagesViewSet.as_view()),
 ]
