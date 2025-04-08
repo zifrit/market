@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParameter
 from shop.models import Product, Brands, Categories, Sizes, Colors
 from rest_framework.viewsets import ModelViewSet
 from shop.api.serializers import (
@@ -7,47 +8,69 @@ from shop.api.serializers import (
     SizeSerializer,
     ColorsSerializer,
     ViewProductSerializers,
-    RetrieveProductSerializers
+    RetrieveProductSerializers,
 )
+from context import swagger_json
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
+
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.select_related('brands','category','shop').prefetch_related('sizes','color')
+    queryset = Product.objects.select_related(
+        "brands", "category", "shop"
+    ).prefetch_related("sizes", "color")
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
-    search_fields = ['name']
-    filterset_fields = ['enabled','shop','brands','category','quantity','price']
-    ordering_fields = ['price','enabled']
+    search_fields = ["name"]
+    filterset_fields = ["enabled", "shop", "brands", "category", "quantity", "price"]
+    ordering_fields = ["price", "enabled"]
 
     def get_serializer_class(self):
-        if self.request.method == 'GET':
-            if self.kwargs.get('pk'):
+        if self.request.method == "GET":
+            if self.kwargs.get("pk"):
                 return RetrieveProductSerializers
             return ViewProductSerializers
         return ProductSerializers
 
+    @extend_schema(
+        examples=[
+            OpenApiExample("get example", value=swagger_json.product_list_retrieve)
+        ]
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        examples=[
+            OpenApiExample("get example", value=swagger_json.product_list_retrieve)
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class BrandsViewSet(ModelViewSet):
     queryset = Brands.objects.all()
     serializer_class = BrandsSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['name']
+    search_fields = ["name"]
+
 
 class CategoriesViewSet(ModelViewSet):
     queryset = Categories.objects.all()
     serializer_class = CategorySerializer
     filter_backends = [SearchFilter]
-    search_fields = ['name']
+    search_fields = ["name"]
+
 
 class SizesViewSet(ModelViewSet):
     queryset = Sizes.objects.all()
     serializer_class = SizeSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['name']
+    search_fields = ["name"]
+
 
 class ColorsViewSet(ModelViewSet):
     queryset = Colors.objects.all()
     serializer_class = ColorsSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['hex_color']
+    search_fields = ["hex_color"]
