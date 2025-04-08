@@ -6,6 +6,7 @@ from shop.api.serializers import (
     CategorySerializer,
     SizeSerializer,
     ColorsSerializer,
+    ViewProductSerializers
 )
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -13,10 +14,14 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.select_related('brands','category','shop').prefetch_related('sizes','color')
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
-    serializer_class = ProductSerializers
     search_fields = ['name']
     filterset_fields = ['enabled','shop','brands','category','quantity','price']
     ordering_fields = ['price','enabled']
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ViewProductSerializers
+        return ProductSerializers
 
 
 

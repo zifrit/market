@@ -9,7 +9,31 @@ class BaseSerializer(serializers.ModelSerializer):
 class ProductSerializers(BaseSerializer):
     class Meta:
         model = Product
-        exclude = ['delete','enabled']
+        exclude = ['delete','enabled','updated_at']
+
+class ViewProductSerializers(ProductSerializers):
+    brands = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+    shop = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_brands(obj: Product):
+        if obj.brands:
+            return {"id": obj.id, "name":obj.brands.name}
+        return {}
+
+    @staticmethod
+    def get_category(obj: Product):
+        if obj.category:
+            return {"id": obj.id, "name":obj.category.name}
+        return {}
+
+    @staticmethod
+    def get_shop(obj: Product):
+        if obj.shop:
+            return {"id": obj.id, "name":obj.shop.name}
+        return {}
+
 
 
 class ProductImagesSerializers(BaseSerializer):
@@ -40,3 +64,9 @@ class ColorsSerializer(BaseSerializer):
     class Meta:
         model = Colors
         exclude = ['delete']
+
+
+class ShopSerializer(BaseSerializer):
+    class Meta:
+        model = Shop
+        exclude = ['delete','is_active']
