@@ -68,6 +68,9 @@ if SWAGGER:
     LIBRARY_APP += ['drf_spectacular']
 
 if DEBUG:
+    INTERNAL_IPS = [
+        '127.0.0.1',
+    ]
     LIBRARY_APP += ['debug_toolbar']
 
 INSTALLED_APPS = BASE_APPS + PROJECT + LIBRARY_APP
@@ -134,15 +137,15 @@ DATABASES = {
 
 
 # AWS настройки
-AWS_ACCESS_KEY_ID = 'BA0XFFRAJYE7FKFV4U8J'
-AWS_SECRET_ACCESS_KEY = 'w3xhMBodCmoL9oGxcoxvuBAQeHMNW5V0eooyT1dv'
-AWS_STORAGE_BUCKET_NAME = '4467e3c1-clo_-test'
-AWS_S3_ENDPOINT_URL = 'https://s3.twcstorage.ru'
-AWS_S3_REGION_NAME = 'ru-1'  # или ваш регион
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL')
+AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
 AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = 'public-read'
-AWS_S3_ADDRESSING_STYLE = "virtual"
-AWS_S3_SIGNATURE_VERSION = "s3"
+AWS_DEFAULT_ACL = os.environ.get('AWS_DEFAULT_ACL')
+AWS_S3_ADDRESSING_STYLE = os.environ.get('AWS_S3_ADDRESSING_STYLE')
+AWS_S3_SIGNATURE_VERSION = os.environ.get('AWS_S3_SIGNATURE_VERSION')
 
 # Настройка storages
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
@@ -230,7 +233,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
