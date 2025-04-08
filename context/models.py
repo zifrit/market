@@ -10,7 +10,7 @@ class CreateUpdateTimeMixin(models.Model):
 
 
 class DeleteTimeMixin(models.Model):
-    delete = models.DateTimeField(verbose_name='Время удаления', blank=True, null=True)
+    delete_at = models.DateTimeField(verbose_name='Время удаления', blank=True, null=True)
 
     class Meta:
         abstract = True

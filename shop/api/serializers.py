@@ -9,7 +9,7 @@ class BaseSerializer(serializers.ModelSerializer):
 class ProductSerializers(BaseSerializer):
     class Meta:
         model = Product
-        exclude = ['delete','enabled','updated_at']
+        exclude = ['delete_at','enabled','updated_at']
 
 class ViewProductSerializers(ProductSerializers):
     brands = serializers.SerializerMethodField()
@@ -39,34 +39,34 @@ class ViewProductSerializers(ProductSerializers):
 class ProductImagesSerializers(BaseSerializer):
     class Meta:
         model = ProductImages
-        exclude = ['delete']
+        fields = ['product','color','image']
 
 
 class BrandsSerializer(BaseSerializer):
     class Meta:
         model = Brands
-        exclude = ['delete']
+        exclude = ['delete_at']
 
 
 class SizeSerializer(BaseSerializer):
     class Meta:
         model = Sizes
-        exclude = ['delete']
+        exclude = ['delete_at']
 
 
 class CategorySerializer(BaseSerializer):
     class Meta:
         model = Categories
-        exclude = ['delete']
+        exclude = ['delete_at']
 
 
 class ColorsSerializer(BaseSerializer):
     class Meta:
         model = Colors
-        exclude = ['delete']
+        exclude = ['delete_at']
 
 
 class ShopSerializer(BaseSerializer):
     class Meta:
         model = Shop
-        exclude = ['delete','is_active','updated_at']
+        exclude = ['delete_at','is_active','updated_at']
