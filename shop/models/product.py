@@ -13,6 +13,7 @@ class Product(TimeStampMixin, CreatorMixin):
     brands = models.ForeignKey('Brands', verbose_name='Бренды', blank=True, null=True, on_delete=models.SET_NULL)
     category = models.ForeignKey('Categories', verbose_name='Категория', blank=True, null=True, on_delete=models.SET_NULL)
     sizes = models.ManyToManyField('Sizes', verbose_name='Размеры', blank=True)
+    shop = models.ForeignKey('shop.Shop', verbose_name='магазин', on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
         ordering = ['created_at', 'id']
