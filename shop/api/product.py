@@ -6,7 +6,8 @@ from shop.api.serializers import (
     CategorySerializer,
     SizeSerializer,
     ColorsSerializer,
-    ViewProductSerializers
+    ViewProductSerializers,
+    RetrieveProductSerializers
 )
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -20,6 +21,8 @@ class ProductViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
+            if self.kwargs.get('pk'):
+                return RetrieveProductSerializers
             return ViewProductSerializers
         return ProductSerializers
 
