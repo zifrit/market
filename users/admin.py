@@ -12,35 +12,59 @@ class UserDataInline(admin.StackedInline):
 
 @admin.register(CustomUser)
 class AdminCustomUser(UserAdmin):
-    list_display = ['id',
-                    'username',
-                    'fio',
-                    'phone',
-                    'email',
-                    'delete',
-                    'is_active',
-                    'is_staff']
-    list_display_links = ['id', 'username']
-    list_editable = ['is_active',
-                     'is_staff']
+    list_display = [
+        "id",
+        "username",
+        "fio",
+        "phone",
+        "email",
+        "delete_at",
+        "is_active",
+        "is_staff",
+    ]
+    list_display_links = ["id", "username"]
+    list_editable = ["is_active", "is_staff"]
     inlines = (UserDataInline,)
-    ordering = ['id', 'username']
+    ordering = ["id", "username"]
     fieldsets = (
-        (None, {
-            'fields': ('username', 'password')
-        }),
-        (_('Personal info'), {
-            'fields': ('first_name', 'last_name', 'middle_name', 'email', 'phone',)
-        }),
-        (_('Permissions'), {
-            'fields': ('is_active', 'is_staff', 'is_superuser', 'delete', 'groups', 'user_permissions'),
-        }),
-        (_('Important dates'), {
-            'fields': ('last_login', 'date_joined',)
-        }),
+        (None, {"fields": ("username", "password")}),
+        (
+            _("Personal info"),
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "middle_name",
+                    "email",
+                    "phone",
+                )
+            },
+        ),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "delete_at",
+                    "groups",
+                    "user_permissions",
+                ),
+            },
+        ),
+        (
+            _("Important dates"),
+            {
+                "fields": (
+                    "last_login",
+                    "date_joined",
+                )
+            },
+        ),
     )
 
 
 @admin.register(VerificationCode)
 class AdminVerificationCode(admin.ModelAdmin):
-    list_display = ['id', 'code', 'created_at', 'is_used']
+    list_display = ["id", "code", "created_at", "is_used"]
