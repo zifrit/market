@@ -1,7 +1,8 @@
 from typing import List
 
 from rest_framework import serializers
-from shop.models import *
+
+from shop.models import ProductImages, Product, Brands, Sizes, Categories, Colors, Shop
 
 
 class BaseSerializer(serializers.ModelSerializer):
@@ -64,11 +65,17 @@ class ViewProductSerializers(ProductSerializers):
         return [{}]
 
     @staticmethod
-    def get_sizes(obj: Product) -> List[dict]:
-        if obj.sizes.first():
-            size = obj.sizes.first()
-            return [{"id": size.id, "name": size.name}]
-        return [{}]
+    def get_sizes(obj: Product) -> dict[str, List[dict]]:
+
+        result = {"male": [], "female": []}
+        if obj.sizes.filter(gender=Sizes.GenderType.MALE).first():
+            size = obj.sizes.filter(gender=Sizes.GenderType.MALE).first()
+            result["male"].append({"id": size.id, "name": size.name})
+
+        if obj.sizes.filter(gender=Sizes.GenderType.FEMALE).first():
+            size = obj.sizes.filter(gender=Sizes.GenderType.FEMALE).first()
+            result["female"].append({"id": size.id, "name": size.name})
+        return result
 
 
 class RetrieveProductSerializers(ViewProductSerializers):
@@ -80,8 +87,15 @@ class RetrieveProductSerializers(ViewProductSerializers):
         ]
 
     @staticmethod
-    def get_sizes(obj: Product) -> List[dict]:
-        return [{"id": size.id, "name": size.name} for size in obj.sizes.all()]
+    def get_sizes(obj: Product) -> dict[str, List[dict]]:
+        result = {"male": [], "female": []}
+        for size in obj.sizes.all():  # type: Sizes
+            if size.gender == Sizes.GenderType.MALE:
+                result["male"].append({"id": size.id, "name": size.name})
+            elif size.gender == Sizes.GenderType.FEMALE:
+                result["female"].append({"id": size.id, "name": size.name})
+
+        return result
 
     @staticmethod
     def get_images(obj: Product) -> List[dict]:
