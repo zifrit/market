@@ -60,6 +60,7 @@ class Colors(TimeStampMixin, CreatorMixin):
 
 
 class Brands(TimeStampMixin, CreatorMixin):
+    key = models.CharField(blank=True, null=True, max_length=255)
     name = models.CharField(
         verbose_name="Название", blank=True, null=True, max_length=255
     )
