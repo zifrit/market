@@ -38,6 +38,20 @@ class Shop(TimeStampMixin, CreatorMixin):
         return cls.objects.filter(is_active=True)
 
 
-#
-# class ShopReport(TimeStampMixin, CreatorMixin):
-#     pass
+class ShopReport(TimeStampMixin, CreatorMixin):
+    name = models.CharField(verbose_name="Имя", blank=True, null=True, max_length=255)
+    shop_name = models.CharField(
+        verbose_name="Название магазина", blank=True, null=True, max_length=255
+    )
+    social_media = models.CharField(
+        verbose_name="Социальная сеть", blank=True, null=True, max_length=255
+    )
+    portfolio = models.CharField(
+        verbose_name="Портфолио", blank=True, null=True, max_length=255
+    )
+
+    class Meta:
+        ordering = ["created_at", "id"]
+        db_table = "clo_shop_report"
+        verbose_name = "ShopReport"
+        verbose_name_plural = "ShopReports"
