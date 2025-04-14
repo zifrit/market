@@ -1,25 +1,43 @@
 from django.db import models
-
+from storages.backends.s3boto3 import S3Boto3Storage
 from context.models import TimeStampMixin, CreatorMixin
+
+
+def shop_icon_pth(_, filename):
+    return f"shop/icons/{filename}"
 
 
 class Shop(TimeStampMixin, CreatorMixin):
 
     class ShopStatus(models.TextChoices):
-        WORK = 'WORK'
-        NOT_WORK = 'NOT_WORK'
+        WORK = "WORK"
+        NOT_WORK = "NOT_WORK"
 
-    name = models.CharField(verbose_name='Название', blank=True, null=True, max_length=255)
-    is_active = models.BooleanField(default=True, verbose_name='Активность магазина')
-    status = models.CharField(max_length=50, choices=ShopStatus.choices, default=ShopStatus.WORK)
-
+    name = models.CharField(
+        verbose_name="Название", blank=True, null=True, max_length=255
+    )
+    is_active = models.BooleanField(default=True, verbose_name="Активность магазина")
+    status = models.CharField(
+        max_length=50, choices=ShopStatus.choices, default=ShopStatus.WORK
+    )
+    icon = models.ImageField(
+        upload_to=shop_icon_pth,  # путь в S3
+        storage=S3Boto3Storage(),
+        null=True,
+        blank=True,
+    )
 
     class Meta:
-        ordering = ['created_at', 'id']
-        db_table = 'clo_shop'
-        verbose_name = 'Shop'
-        verbose_name_plural = 'Shops'
+        ordering = ["created_at", "id"]
+        db_table = "clo_shop"
+        verbose_name = "Shop"
+        verbose_name_plural = "Shops"
 
     @classmethod
     def get_active_shops(cls):
         return cls.objects.filter(is_active=True)
+
+
+#
+# class ShopReport(TimeStampMixin, CreatorMixin):
+#     pass

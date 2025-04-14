@@ -5,18 +5,56 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 
 class ProductImages(TimeStampMixin, CreatorMixin):
-    name = models.CharField(max_length=200, verbose_name='Название')
-    product = models.ForeignKey('shop.Product', on_delete=models.CASCADE, verbose_name='Продукт', related_name='images', blank=True, null=True)
-    color = models.ForeignKey('shop.Colors', on_delete=models.CASCADE, verbose_name='Цвет', related_name='images', blank=True, null=True)
+    name = models.CharField(max_length=200, verbose_name="Название")
+    product = models.ForeignKey(
+        "shop.Product",
+        on_delete=models.CASCADE,
+        verbose_name="Продукт",
+        related_name="images",
+        blank=True,
+        null=True,
+    )
+    color = models.ForeignKey(
+        "shop.Colors",
+        on_delete=models.CASCADE,
+        verbose_name="Цвет",
+        related_name="images",
+        blank=True,
+        null=True,
+    )
     image = models.FileField(
-        upload_to='products/images/%Y/%m/%d/',  # путь в S3
+        upload_to="products/images/%Y-%m-%d/",  # путь в S3
         storage=S3Boto3Storage(),
         null=True,
-        blank=True
+        blank=True,
     )
 
     class Meta:
-        ordering = ['created_at', 'id']
-        db_table = 'clo_product_images'
-        verbose_name = 'ProductImage'
-        verbose_name_plural = 'ProductImages'
+        ordering = ["created_at", "id"]
+        db_table = "clo_product_images"
+        verbose_name = "ProductImage"
+        verbose_name_plural = "ProductImages"
+
+
+class ShopImages(TimeStampMixin, CreatorMixin):
+    name = models.CharField(max_length=200, verbose_name="Название")
+    shop = models.ForeignKey(
+        "shop.Shop",
+        on_delete=models.CASCADE,
+        verbose_name="Магазин",
+        related_name="images",
+        blank=True,
+        null=True,
+    )
+    image = models.FileField(
+        upload_to="shop/images/%Y-%m-%d/",  # путь в S3
+        storage=S3Boto3Storage(),
+        null=True,
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ["created_at", "id"]
+        db_table = "clo_shop_images"
+        verbose_name = "ShopImage"
+        verbose_name_plural = "ShopImages"
