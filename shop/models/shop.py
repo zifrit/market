@@ -20,6 +20,13 @@ class Shop(TimeStampMixin, CreatorMixin):
     status = models.CharField(
         max_length=50, choices=ShopStatus.choices, default=ShopStatus.WORK
     )
+    address = models.ForeignKey(
+        "shop.Address",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        verbose_name="Адресс",
+    )
     icon = models.ImageField(
         upload_to=shop_icon_pth,  # путь в S3
         storage=S3Boto3Storage(),
