@@ -2,7 +2,16 @@ from typing import List
 
 from rest_framework import serializers
 
-from shop.models import ProductImages, Product, Brands, Sizes, Categories, Colors, Shop
+from shop.models import (
+    ProductImages,
+    Product,
+    Brands,
+    Sizes,
+    Categories,
+    Colors,
+    Shop,
+    ShopImages,
+)
 
 
 class BaseSerializer(serializers.ModelSerializer):
@@ -11,10 +20,11 @@ class BaseSerializer(serializers.ModelSerializer):
 
 class ProductImagesSerializers(BaseSerializer):
     color = serializers.SerializerMethodField()
+    product = serializers.IntegerField(source="product_id", read_only=True)
 
     class Meta:
         model = ProductImages
-        fields = ["color", "image", "name"]
+        fields = ["color", "image", "name", "product"]
 
     @staticmethod
     def get_color(obj: ProductImages) -> dict:
@@ -137,7 +147,21 @@ class ColorsSerializer(BaseSerializer):
         exclude = ["delete_at"]
 
 
+class ShopImagesSerializers(BaseSerializer):
+    shop = serializers.IntegerField(source="shop_id", read_only=True)
+
+    class Meta:
+        model = ShopImages
+        fields = ["shop", "image", "name"]
+
+
 class ShopSerializer(BaseSerializer):
+    images = ProductImagesSerializers(many=True, read_only=True)
+
     class Meta:
         model = Shop
         exclude = ["delete_at", "is_active", "updated_at"]
+
+
+class ExampleSerializer(serializers.Serializer):
+    example = serializers.CharField()
