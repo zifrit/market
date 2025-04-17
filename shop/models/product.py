@@ -101,3 +101,17 @@ class Sizes(TimeStampMixin, CreatorMixin):
         db_table = "clo_sizes"
         verbose_name = "Size"
         verbose_name_plural = "Sizes"
+
+
+class ProductRating(TimeStampMixin, CreatorMixin):
+    product = models.ForeignKey(
+        "shop.Product", on_delete=models.CASCADE, verbose_name="Продукт"
+    )
+    rating = models.PositiveSmallIntegerField(max_length=5, verbose_name="Оценка")
+    comment = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ["created_at", "id"]
+        db_table = "clo_product_rating"
+        verbose_name = "ProductRating"
+        verbose_name_plural = "ProductRating"

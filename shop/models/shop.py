@@ -62,3 +62,27 @@ class ShopReport(TimeStampMixin, CreatorMixin):
         db_table = "clo_shop_report"
         verbose_name = "ShopReport"
         verbose_name_plural = "ShopReports"
+
+
+class ShopWorkSchedules(TimeStampMixin, CreatorMixin):
+    work_schedule = models.JSONField(verbose_name="Время работы", blank=True, null=True)
+
+    class Meta:
+        ordering = ["created_at", "id"]
+        db_table = "clo_shop_work_schedules"
+        verbose_name = "ShopWorkSchedules"
+        verbose_name_plural = "ShopWorkSchedules"
+
+
+class ShopRating(TimeStampMixin, CreatorMixin):
+    product = models.ForeignKey(
+        "shop.Shop", on_delete=models.CASCADE, verbose_name="Магазин"
+    )
+    rating = models.PositiveSmallIntegerField(max_length=5, verbose_name="Оценка")
+    comment = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ["created_at", "id"]
+        db_table = "clo_shop_rating"
+        verbose_name = "ShopRating"
+        verbose_name_plural = "ShopRating"
