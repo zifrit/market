@@ -77,9 +77,14 @@ class ShopWorkSchedules(TimeStampMixin, CreatorMixin):
 
 class ShopRating(TimeStampMixin, CreatorMixin):
     product = models.ForeignKey(
-        "shop.Shop", on_delete=models.CASCADE, verbose_name="Магазин"
+        "shop.Shop",
+        on_delete=models.CASCADE,
+        verbose_name="Магазин",
+        related_name="ratings",
     )
-    rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name="Оценка")
+    rating = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name="Оценка"
+    )
     comment = models.TextField(blank=True, null=True)
 
     class Meta:

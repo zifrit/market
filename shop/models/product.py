@@ -105,7 +105,10 @@ class Sizes(TimeStampMixin, CreatorMixin):
 
 class ProductRating(TimeStampMixin, CreatorMixin):
     product = models.ForeignKey(
-        "shop.Product", on_delete=models.CASCADE, verbose_name="Продукт"
+        "shop.Product",
+        on_delete=models.CASCADE,
+        verbose_name="Продукт",
+        related_name="ratings",
     )
     rating = models.PositiveIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name="Оценка"
