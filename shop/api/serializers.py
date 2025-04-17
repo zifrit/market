@@ -11,6 +11,8 @@ from shop.models import (
     Colors,
     Shop,
     ShopImages,
+    ProductRating,
+    ShopRating,
 )
 
 
@@ -48,6 +50,11 @@ class ViewProductSerializers(ProductSerializers):
     color = serializers.SerializerMethodField()
     sizes = serializers.SerializerMethodField()
     images = ProductImagesSerializers(many=True, read_only=True)
+    rating = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_rating(obj: Product):
+        return obj.rating if obj.rating else 0
 
     @staticmethod
     def get_brands(obj: Product):
@@ -157,10 +164,29 @@ class ShopImagesSerializers(BaseSerializer):
 
 class ShopSerializer(BaseSerializer):
     images = ProductImagesSerializers(many=True, read_only=True)
+    rating = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_rating(obj: Product):
+        if obj.brands:
+            return {"id": obj.id, "name": obj.brands.name}
+        return obj.rating if obj.rating else 0
 
     class Meta:
         model = Shop
         exclude = ["delete_at", "is_active", "updated_at"]
+
+
+class ProductRatingSerializers(BaseSerializer):
+    class Meta:
+        model = ProductRating
+        exclude = ["delete_at"]
+
+
+class ShopRatingSerializer(BaseSerializer):
+    class Meta:
+        model = ShopRating
+        exclude = ["delete_at"]
 
 
 class ExampleSerializer(serializers.Serializer):

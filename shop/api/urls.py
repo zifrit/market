@@ -7,8 +7,9 @@ from shop.api.product import (
     BrandsViewSet,
     SizesViewSet,
     ColorsViewSet,
+    ListCreateProductRaringView,
 )
-from shop.api.shop import ShopViewSet
+from shop.api.shop import ShopViewSet, ListCreateShopRatingView
 from shop.api.images import ProductImagesViewSet, ShopImagesViewSet, AddShopIconImage
 
 router = routers.SimpleRouter()
@@ -24,4 +25,6 @@ urlpatterns = [
     path("images/rpoduct", ProductImagesViewSet.as_view()),
     path("images/shop", ShopImagesViewSet.as_view()),
     path("images/shop/icon", AddShopIconImage.as_view()),
+    path("shops/rating", ListCreateShopRatingView.as_view()),
+    path("products/rating", ListCreateProductRaringView.as_view()),
 ]

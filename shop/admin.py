@@ -12,6 +12,8 @@ from shop.models import (
     Address,
     FavoriteProduct,
     ShopImages,
+    ProductRating,
+    ShopRating,
 )
 
 
@@ -65,3 +67,13 @@ class ProductImagesAdmin(admin.ModelAdmin):
 @admin.register(ShopImages)
 class ShopImagesAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "shop")
+
+
+@admin.register(ProductRating)
+class ProductRatingAdmin(admin.ModelAdmin):
+    list_display = ("id", "rating")
+
+
+@admin.register(ShopRating)
+class ShopRatingAdmin(admin.ModelAdmin):
+    list_display = ("id", "rating")

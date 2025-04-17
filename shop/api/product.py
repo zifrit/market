@@ -1,5 +1,7 @@
 from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParameter
-from shop.models import Product, Brands, Categories, Sizes, Colors
+from rest_framework import generics, status
+
+from shop.models import Product, Brands, Categories, Sizes, Colors, ProductRating
 from rest_framework.viewsets import ModelViewSet
 from shop.api.serializers import (
     ProductSerializers,
@@ -9,16 +11,21 @@ from shop.api.serializers import (
     ColorsSerializer,
     ViewProductSerializers,
     RetrieveProductSerializers,
+    ProductRatingSerializers,
 )
 from context import swagger_json
+from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
 
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.select_related(
-        "brands", "category", "shop"
-    ).prefetch_related("sizes", "color")
+    queryset = (
+        Product.objects.select_related("brands", "category", "shop")
+        .prefetch_related("sizes", "color", "images", "ratings")
+        .annotate(rating=Avg("ratings__rating"))
+    )
+    serializer_class = ProductSerializers
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     search_fields = ["name"]
     filterset_fields = ["enabled", "shop", "brands", "category", "quantity", "price"]
@@ -74,3 +81,8 @@ class ColorsViewSet(ModelViewSet):
     serializer_class = ColorsSerializer
     filter_backends = [SearchFilter]
     search_fields = ["hex_color"]
+
+
+class ListCreateProductRaringView(generics.ListCreateAPIView):
+    queryset = ProductRating.objects.all()
+    serializer_class = ProductRatingSerializers
