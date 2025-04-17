@@ -1,50 +1,67 @@
 from django.contrib import admin
 
 # Register your models here.
-from shop.models import Shop, Sizes, Colors, Brands, Product, ProductImages, Categories, Address, FavoriteProduct
+from shop.models import (
+    Shop,
+    Sizes,
+    Colors,
+    Brands,
+    Product,
+    ProductImages,
+    Categories,
+    Address,
+    FavoriteProduct,
+    ShopImages,
+)
 
 
 @admin.register(Shop)
 class ShopAdmin(admin.ModelAdmin):
-    readonly_fields = ("id",)
+    list_display = ("id", "name")
+    list_display_links = ("id", "name")
     search_fields = ("name",)
 
 
 @admin.register(Sizes)
 class SizesAdmin(admin.ModelAdmin):
-    readonly_fields = ("id",)
+    list_display = ("id",)
 
 
 @admin.register(Colors)
 class ColorsAdmin(admin.ModelAdmin):
-    readonly_fields = ("id",)
+    list_display = ("id",)
 
 
 @admin.register(Brands)
 class BrandsAdmin(admin.ModelAdmin):
-    readonly_fields = ("id",)
+    list_display = ("id",)
 
 
 @admin.register(Categories)
 class CategoriesAdmin(admin.ModelAdmin):
-    readonly_fields = ("id",)
+    list_display = ("id",)
 
 
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
-    readonly_fields = ("id",)
+    list_display = ("id",)
 
 
 @admin.register(FavoriteProduct)
 class FavoriteProductAdmin(admin.ModelAdmin):
-    readonly_fields = ("id",)
+    list_display = ("id",)
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    readonly_fields = ("id",)
+    list_display = ("id",)
 
 
 @admin.register(ProductImages)
 class ProductImagesAdmin(admin.ModelAdmin):
-    readonly_fields = ("id",)
+    list_display = ("id",)
+
+
+@admin.register(ShopImages)
+class ShopImagesAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "shop")
