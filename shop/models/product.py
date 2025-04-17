@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 from context.models import TimeStampMixin, CreatorMixin
 
 
@@ -107,7 +107,9 @@ class ProductRating(TimeStampMixin, CreatorMixin):
     product = models.ForeignKey(
         "shop.Product", on_delete=models.CASCADE, verbose_name="Продукт"
     )
-    rating = models.PositiveSmallIntegerField(max_length=5, verbose_name="Оценка")
+    rating = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name="Оценка"
+    )
     comment = models.TextField(blank=True, null=True)
 
     class Meta:

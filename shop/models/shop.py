@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from storages.backends.s3boto3 import S3Boto3Storage
 from context.models import TimeStampMixin, CreatorMixin
@@ -78,7 +79,7 @@ class ShopRating(TimeStampMixin, CreatorMixin):
     product = models.ForeignKey(
         "shop.Shop", on_delete=models.CASCADE, verbose_name="Магазин"
     )
-    rating = models.PositiveSmallIntegerField(max_length=5, verbose_name="Оценка")
+    rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name="Оценка")
     comment = models.TextField(blank=True, null=True)
 
     class Meta:
