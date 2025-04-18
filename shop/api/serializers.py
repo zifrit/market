@@ -163,13 +163,11 @@ class ShopImagesSerializers(BaseSerializer):
 
 
 class ShopSerializer(BaseSerializer):
-    images = ProductImagesSerializers(many=True, read_only=True)
+    images = ShopImagesSerializers(many=True, read_only=True)
     rating = serializers.SerializerMethodField()
 
     @staticmethod
     def get_rating(obj: Product):
-        if obj.brands:
-            return {"id": obj.id, "name": obj.brands.name}
         return obj.rating if obj.rating else 0
 
     class Meta:

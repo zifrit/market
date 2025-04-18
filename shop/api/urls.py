@@ -22,7 +22,7 @@ router.register("shops", ShopViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("images/rpoduct", ProductImagesViewSet.as_view()),
+    path("images/product", ProductImagesViewSet.as_view()),
     path("images/shop", ShopImagesViewSet.as_view()),
     path("images/shop/icon", AddShopIconImage.as_view()),
     path("shops/rating", ListCreateShopRatingView.as_view()),
