@@ -59,26 +59,28 @@ class ViewProductSerializers(ProductSerializers):
     @staticmethod
     def get_brands(obj: Product):
         if obj.brands:
-            return {"id": obj.id, "name": obj.brands.name}
+            return {"id": obj.brands.id, "name": obj.brands.name}
         return {}
 
     @staticmethod
     def get_category(obj: Product):
         if obj.category:
-            return {"id": obj.id, "name": obj.category.name}
+            return {"id": obj.category.id, "name": obj.category.name}
         return {}
 
     @staticmethod
     def get_shop(obj: Product):
         if obj.shop:
-            return {"id": obj.id, "name": obj.shop.name}
+            return {"id": obj.shop.id, "name": obj.shop.name}
         return {}
 
     @staticmethod
     def get_color(obj: Product) -> List[dict]:
         if obj.color.first():
-            color = obj.color.first()
-            return [{"id": color.id, "name": color.name, "hex_color": color.hex_color}]
+            return [
+                {"id": color.id, "name": color.name, "hex_color": color.hex_color}
+                for color in obj.color.all()[:3]
+            ]
         return [{}]
 
     @staticmethod
@@ -113,21 +115,6 @@ class RetrieveProductSerializers(ViewProductSerializers):
                 result["female"].append({"id": size.id, "name": size.name})
 
         return result
-
-    @staticmethod
-    def get_images(obj: Product) -> List[dict]:
-        return [
-            {
-                "id": image.id,
-                "color": {
-                    "id": image.color.id,
-                    "name": image.color.name,
-                    "hex_color": image.color.hex_color,
-                },
-                "path": f"https://4467e3c1-clo-test.s3.twcstorage.ru/{image.image.__str__()}",
-            }
-            for image in obj.images.all()  # type : ProductImages
-        ]
 
 
 class BrandsSerializer(BaseSerializer):
