@@ -8,7 +8,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from shop.models import ProductImages, ShopImages, Shop
+from shop.models import ProductImages, ShopImages, Shop, Product
 from shop.api.serializers import (
     ProductImagesSerializers,
     ShopImagesSerializers,
@@ -36,13 +36,16 @@ class ProductImagesViewSet(generics.GenericAPIView):
             "multipart/form-data": {
                 "type": "object",
                 "properties": {
-                    "file": {
-                        "type": "string",
-                        "format": "binary",
-                        "description": "Файл для загрузки",
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "binary",
+                        },
+                        "description": "Файлы для загрузки",
                     }
                 },
-                "required": ["file"],
+                "required": ["files"],
             }
         },
         responses={
@@ -64,16 +67,24 @@ class ProductImagesViewSet(generics.GenericAPIView):
         summary="Загрузка фото продукта",
     )
     def post(self, request, *args, **kwargs):
-        for name, file in request.FILES.items():
+        images = []
+        for file in request.FILES.getlist("files"):
             data = request.query_params
+            product = Product.objects.filter(id=data["product"]).first()
+            if not product:
+                return Response(
+                    {"ditail": "product not found"}, status=status.HTTP_404_NOT_FOUND
+                )
             image = ProductImages.objects.create(
                 image=file,
                 name=file.name,
                 product_id=data.get("product"),
                 color_id=data.get("color"),
             )
+            images.append(image)
+        if images:
             return Response(
-                data=ProductImagesSerializers(instance=image).data,
+                data=ProductImagesSerializers(instance=images, many=True).data,
                 status=status.HTTP_201_CREATED,
             )
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -96,13 +107,16 @@ class ShopImagesViewSet(generics.GenericAPIView):
             "multipart/form-data": {
                 "type": "object",
                 "properties": {
-                    "file": {
-                        "type": "string",
-                        "format": "binary",
-                        "description": "Файл для загрузки",
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "binary",
+                        },
+                        "description": "Файлы для загрузки",
                     }
                 },
-                "required": ["file"],
+                "required": ["files"],
             }
         },
         responses={
@@ -123,7 +137,8 @@ class ShopImagesViewSet(generics.GenericAPIView):
         summary="Загрузка фото магазина",
     )
     def post(self, request, *args, **kwargs):
-        for name, file in request.FILES.items():
+        images = []
+        for file in request.FILES.getlist("files"):
             data = request.query_params
             shop = Shop.objects.filter(id=data.get("shop")).first()
             if not shop:
@@ -135,8 +150,10 @@ class ShopImagesViewSet(generics.GenericAPIView):
                 name=file.name,
                 shop_id=data.get("shop"),
             )
+            images.append(image)
+        if images:
             return Response(
-                data=ShopImagesSerializers(instance=image).data,
+                data=ShopImagesSerializers(instance=images, many=True).data,
                 status=status.HTTP_201_CREATED,
             )
         return Response(status=status.HTTP_400_BAD_REQUEST)
