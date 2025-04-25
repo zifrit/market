@@ -31,3 +31,21 @@ product_list_retrieve = {
     "description": "string",
     "quantity": 2147483647,
 }
+
+crud_address = {
+    "application/json": {
+        "type": "object",
+        "properties": {
+            "address": {"type": "string"},
+            "coordinate": {
+                "type": "object",
+                "properties": {
+                    "sting_key1": {},
+                    "sting_key2": {},
+                },
+                "required": ["sting_key1", "sting_key2"],
+            },
+        },
+        "required": ["address"],
+    }
+}

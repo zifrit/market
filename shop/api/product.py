@@ -1,6 +1,7 @@
 from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParameter
 from rest_framework import generics, status
 
+from shop.filters import ProductFilter
 from shop.models import Product, Brands, Categories, Sizes, Colors, ProductRating
 from rest_framework.viewsets import ModelViewSet
 from shop.api.serializers import (
@@ -27,8 +28,8 @@ class ProductViewSet(ModelViewSet):
     )
     serializer_class = ProductSerializers
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
-    search_fields = ["name"]
-    filterset_fields = ["enabled", "shop", "brands", "category", "quantity", "price"]
+    search_fields = ["name", "shop__name", "brand__name", "category__name"]
+    filterset_class = ProductFilter
     ordering_fields = ["price", "enabled"]
 
     def get_serializer_class(self):
