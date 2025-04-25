@@ -49,3 +49,67 @@ crud_address = {
         "required": ["address"],
     }
 }
+
+work_schedule_retrieve = {
+    "application/json": {
+        "type": "object",
+        "properties": {
+            "shop": {"type": "integer"},
+            "work_schedule": {
+                "type": "object",
+                "properties": {
+                    "Monday": {
+                        "type": "object",
+                        "properties": {
+                            "begin": {"type": "string"},
+                            "end": {"type": "string"},
+                        },
+                    },
+                    "Tuesday": {
+                        "type": "object",
+                        "properties": {
+                            "begin": {"type": "string"},
+                            "end": {"type": "string"},
+                        },
+                    },
+                    "Wednesday": {
+                        "type": "object",
+                        "properties": {
+                            "begin": {"type": "string"},
+                            "end": {"type": "string"},
+                        },
+                    },
+                    "Thursday": {
+                        "type": "object",
+                        "properties": {
+                            "begin": {"type": "string"},
+                            "end": {"type": "string"},
+                        },
+                    },
+                    "Friday": {
+                        "type": "object",
+                        "properties": {
+                            "begin": {"type": "string"},
+                            "end": {"type": "string"},
+                        },
+                    },
+                    "Saturday": {
+                        "type": "object",
+                        "properties": {
+                            "begin": {"type": "string"},
+                            "end": {"type": "string"},
+                        },
+                    },
+                    "Sunday": {
+                        "type": "object",
+                        "properties": {
+                            "begin": {"type": "string"},
+                            "end": {"type": "string"},
+                        },
+                    },
+                },
+            },
+        },
+        "required": ["shop", "work_schedule"],
+    }
+}
