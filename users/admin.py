@@ -15,7 +15,8 @@ class AdminCustomUser(UserAdmin):
     list_display = [
         "id",
         "username",
-        "fio",
+        "first_name",
+        "last_name",
         "phone",
         "email",
         "delete_at",

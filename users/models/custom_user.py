@@ -27,7 +27,6 @@ class CustomUser(AbstractUser, TimeStampMixin):
     first_name = models.CharField(max_length=255, verbose_name="Фамилия", blank=True)
     last_name = models.CharField(max_length=255, verbose_name="Имя", blank=True)
     middle_name = models.CharField(max_length=255, verbose_name="Отчество", blank=True)
-    fio = models.CharField(max_length=255, verbose_name="ФИО", blank=True)
     email = models.EmailField(verbose_name="Майл", unique=True, blank=True, null=True)
     phone = models.CharField(max_length=18, unique=True, verbose_name="Номер телефона")
 
@@ -59,7 +58,10 @@ class UserData(TimeStampMixin):
         FEMALE = "FEMALE", "Женщина"
 
     user = models.OneToOneField(
-        CustomUser, on_delete=models.CASCADE, verbose_name="Пользователь"
+        CustomUser,
+        on_delete=models.CASCADE,
+        verbose_name="Пользователь",
+        related_name="userdata",
     )
     gender = models.CharField(
         max_length=10, choices=GenderType.choices, blank=True, null=True
