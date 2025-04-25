@@ -13,11 +13,15 @@ from shop.models import (
     ShopImages,
     ProductRating,
     ShopRating,
+    Address,
 )
 
 
 class BaseSerializer(serializers.ModelSerializer):
-    creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    pass
+    # creator = serializers.HiddenField(
+    #     default=serializers.CurrentUserDefault(), required=False
+    # )
 
 
 class ProductImagesSerializers(BaseSerializer):
@@ -149,12 +153,21 @@ class ShopImagesSerializers(BaseSerializer):
         fields = ["shop", "image", "name"]
 
 
+class AddressSerializer(BaseSerializer):
+
+    class Meta:
+        model = Address
+        exclude = ["delete_at"]
+
+
 class ShopSerializer(BaseSerializer):
     images = ShopImagesSerializers(many=True, read_only=True)
     rating = serializers.SerializerMethodField()
+    icon = serializers.FileField(read_only=True)
+    address = AddressSerializer()
 
     @staticmethod
-    def get_rating(obj: Product):
+    def get_rating(obj: Shop):
         return obj.rating if obj.rating else 0
 
     class Meta:

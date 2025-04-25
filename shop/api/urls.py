@@ -10,6 +10,7 @@ from shop.api.product import (
     ListCreateProductRaringView,
 )
 from shop.api.shop import ShopViewSet, ListCreateShopRatingView
+from shop.api.address import AddressViewSet
 from shop.api.images import ProductImagesViewSet, ShopImagesViewSet, AddShopIconImage
 
 router = routers.SimpleRouter()
@@ -19,6 +20,7 @@ router.register("brands", BrandsViewSet)
 router.register("sizes", SizesViewSet)
 router.register("colors", ColorsViewSet)
 router.register("shops", ShopViewSet)
+router.register("address", AddressViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
