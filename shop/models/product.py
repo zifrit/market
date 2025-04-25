@@ -36,6 +36,9 @@ class Product(TimeStampMixin, CreatorMixin):
         blank=True,
         null=True,
     )
+    additional_data = models.JSONField(
+        "Дополнительная информация", blank=True, null=True
+    )
 
     class Meta:
         ordering = ["created_at", "id"]

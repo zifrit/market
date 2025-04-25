@@ -55,6 +55,20 @@ class ProductViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
+    @extend_schema(
+        description="""
+        Поле additional_data отвечает за дополнительную информацию может помочь отличить один товар от другого.
+        Формат поля json т.е 
+        additional_data : {
+            "sting_key1": sting_value or integer_value,
+            "sting_key2": sting_value or integer_value,
+            ...
+        }
+        """
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
 
 class BrandsViewSet(ModelViewSet):
     queryset = Brands.objects.all()
