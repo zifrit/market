@@ -9,7 +9,11 @@ from shop.api.product import (
     ColorsViewSet,
     ListCreateProductRaringView,
 )
-from shop.api.shop import ShopViewSet, ListCreateShopRatingView
+from shop.api.shop import (
+    ShopViewSet,
+    ListCreateShopRatingView,
+    UpdateCreateWorkScheduleView,
+)
 from shop.api.address import AddressViewSet
 from shop.api.images import ProductImagesViewSet, ShopImagesViewSet, AddShopIconImage
 
@@ -28,5 +32,6 @@ urlpatterns = [
     path("shops/images", ShopImagesViewSet.as_view()),
     path("shops/icon", AddShopIconImage.as_view()),
     path("shops/rating", ListCreateShopRatingView.as_view()),
+    path("shops/workwork-schedule", UpdateCreateWorkScheduleView.as_view()),
     path("products/rating", ListCreateProductRaringView.as_view()),
 ]

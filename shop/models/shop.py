@@ -69,6 +69,13 @@ class ShopReport(TimeStampMixin, CreatorMixin):
 
 
 class ShopWorkSchedules(TimeStampMixin, CreatorMixin):
+    shop = models.OneToOneField(
+        "Shop",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="work_schedules",
+    )
     work_schedule = models.JSONField(verbose_name="Время работы", blank=True, null=True)
 
     class Meta:

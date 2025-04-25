@@ -14,6 +14,7 @@ from shop.models import (
     ProductRating,
     ShopRating,
     Address,
+    ShopWorkSchedules,
 )
 
 
@@ -162,6 +163,9 @@ class AddressSerializer(BaseSerializer):
 
 class ShopSerializer(BaseSerializer):
     images = ShopImagesSerializers(many=True, read_only=True)
+    work_schedules = serializers.JSONField(
+        source="work_schedules.work_schedule", read_only=True
+    )
     rating = serializers.SerializerMethodField()
     icon = serializers.FileField(read_only=True)
     address = AddressSerializer()
@@ -184,6 +188,13 @@ class ProductRatingSerializers(BaseSerializer):
 class ShopRatingSerializer(BaseSerializer):
     class Meta:
         model = ShopRating
+        exclude = ["delete_at"]
+
+
+class ShopWorkScheduleSerializer(BaseSerializer):
+
+    class Meta:
+        model = ShopWorkSchedules
         exclude = ["delete_at"]
 
 
