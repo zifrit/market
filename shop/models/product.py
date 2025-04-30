@@ -13,6 +13,9 @@ class Product(TimeStampMixin, CreatorMixin):
     quantity = models.PositiveIntegerField(
         verbose_name="Количество", blank=True, null=True
     )
+    external_id = models.CharField(
+        verbose_name="Артикул товара", blank=True, null=True, max_length=255
+    )
     color = models.ManyToManyField("Colors", verbose_name="Цвет", blank=True)
     brands = models.ForeignKey(
         "Brands",
