@@ -21,6 +21,7 @@ class Shop(TimeStampMixin, CreatorMixin):
     status = models.CharField(
         max_length=50, choices=ShopStatus.choices, default=ShopStatus.WORK
     )
+    description = models.TextField(blank=True, null=True, verbose_name="Описание")
     address = models.ForeignKey(
         "shop.Address",
         on_delete=models.PROTECT,

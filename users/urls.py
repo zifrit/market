@@ -10,6 +10,6 @@ router.register(r"users", UserViewSet)
 urlpatterns = [
     path("auth/request-code/", RequestCodeView.as_view(), name="request_code"),
     path("auth/verify-code/", VerifyCodeView.as_view(), name="verify_code"),
-    path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("", include(router.urls)),
 ]
