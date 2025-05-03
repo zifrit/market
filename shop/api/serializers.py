@@ -31,7 +31,7 @@ class ProductImagesSerializers(BaseSerializer):
 
     class Meta:
         model = ProductImages
-        fields = ["color", "image", "name", "product"]
+        fields = ["id", "color", "image", "name", "product"]
 
     @staticmethod
     def get_color(obj: ProductImages) -> dict:
@@ -151,7 +151,7 @@ class ShopImagesSerializers(BaseSerializer):
 
     class Meta:
         model = ShopImages
-        fields = ["shop", "image", "name"]
+        fields = ["id", "shop", "image", "name"]
 
 
 class AddressSerializer(BaseSerializer):

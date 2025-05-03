@@ -15,7 +15,13 @@ from shop.api.shop import (
     UpdateCreateWorkScheduleView,
 )
 from shop.api.address import AddressViewSet
-from shop.api.images import ProductImagesViewSet, ShopImagesViewSet, AddShopIconImage
+from shop.api.images import (
+    ProductImagesViewSet,
+    ShopImagesViewSet,
+    AddShopIconImage,
+    DeleteProductImagesView,
+    DeleteShopImagesView,
+)
 
 router = routers.SimpleRouter()
 router.register("products", ProductViewSet)
@@ -29,7 +35,15 @@ router.register("address", AddressViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("products/images", ProductImagesViewSet.as_view()),
+    path(
+        "products/<int:id>/images/<int:image_id>",
+        DeleteProductImagesView.as_view(),
+    ),
     path("shops/images", ShopImagesViewSet.as_view()),
+    path(
+        "shops/<int:id>/images/<int:image_id>",
+        DeleteShopImagesView.as_view(),
+    ),
     path("shops/icon", AddShopIconImage.as_view()),
     path("shops/rating", ListCreateShopRatingView.as_view()),
     path("shops/workwork-schedule", UpdateCreateWorkScheduleView.as_view()),

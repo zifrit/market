@@ -13,6 +13,7 @@ from shop.api.serializers import (
     ProductImagesSerializers,
     ShopImagesSerializers,
     ExampleSerializer,
+    ShowShopSerializer,
 )
 
 
@@ -90,6 +91,20 @@ class ProductImagesViewSet(generics.GenericAPIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+class DeleteProductImagesView(generics.DestroyAPIView):
+    queryset = ProductImages.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        product_id = kwargs["id"]
+        image_id = kwargs["image_id"]
+        if image := ProductImages.objects.filter(
+            id=image_id, product_id=product_id
+        ).first():
+            image.delete()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "not found"})
+
+
 class ShopImagesViewSet(generics.GenericAPIView):
     queryset = ShopImages.objects.all()
     serializer_class = ShopImagesSerializers
@@ -159,7 +174,19 @@ class ShopImagesViewSet(generics.GenericAPIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class AddShopIconImage(APIView):
+class DeleteShopImagesView(generics.DestroyAPIView):
+    queryset = ShopImages.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        shop_id = kwargs["id"]
+        image_id = kwargs["image_id"]
+        if image := ShopImages.objects.filter(id=image_id, shop_id=shop_id).first():
+            image.delete()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "not found"})
+
+
+class AddShopIconImage(generics.GenericAPIView):
 
     @extend_schema(
         parameters=[

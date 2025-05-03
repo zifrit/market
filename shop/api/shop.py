@@ -48,11 +48,11 @@ class ShopViewSet(ModelViewSet):
 
     @extend_schema(request=ShowShopSerializer)
     def retrieve(self, request, *args, **kwargs):
-        super().retrieve(request, *args, **kwargs)
+        return super().retrieve(request, *args, **kwargs)
 
     @extend_schema(request=ShowShopSerializer)
     def list(self, request, *args, **kwargs):
-        super().list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
 
 class ListCreateShopRatingView(generics.ListCreateAPIView):
