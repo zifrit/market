@@ -7,7 +7,8 @@ from shop.models import Shop, ShopRating, ShopWorkSchedules
 from rest_framework import generics, status
 from rest_framework.viewsets import ModelViewSet
 from shop.api.serializers import (
-    ShopSerializer,
+    ShowShopSerializer,
+    CreateShopSerializer,
     ShopRatingSerializer,
     ShopWorkScheduleSerializer,
 )
@@ -21,11 +22,15 @@ class ShopViewSet(ModelViewSet):
         .select_related("work_schedules")
         .annotate(rating=Avg("ratings__rating"))
     )
-    serializer_class = ShopSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     search_fields = ["name"]
     filterset_fields = ["is_active", "status"]
     ordering_fields = ["is_active"]
+
+    def get_serializer_class(self):
+        if self.request.method in ["POST"]:
+            return CreateShopSerializer
+        return ShowShopSerializer
 
     @extend_schema(
         description="""
@@ -36,10 +41,18 @@ class ShopViewSet(ModelViewSet):
             "sting_key2": sting_value or integer_value,
             ...
         }
-        """
+        """,
     )
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
+
+    @extend_schema(request=ShowShopSerializer)
+    def retrieve(self, request, *args, **kwargs):
+        super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(request=ShowShopSerializer)
+    def list(self, request, *args, **kwargs):
+        super().list(request, *args, **kwargs)
 
 
 class ListCreateShopRatingView(generics.ListCreateAPIView):

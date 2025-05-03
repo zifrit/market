@@ -161,22 +161,30 @@ class AddressSerializer(BaseSerializer):
         exclude = ["delete_at"]
 
 
-class ShopSerializer(BaseSerializer):
+class CreateShopSerializer(BaseSerializer):
     images = ShopImagesSerializers(many=True, read_only=True)
     work_schedules = serializers.JSONField(
         source="work_schedules.work_schedule", read_only=True
     )
-    rating = serializers.SerializerMethodField()
     icon = serializers.FileField(read_only=True)
-    address = AddressSerializer()
 
-    @staticmethod
-    def get_rating(obj: Shop):
-        return obj.rating if obj.rating else 0
+    def validate_status(self, value: str) -> str:
+        if value.upper() in Shop.ShopStatus:
+            return value.upper()
+        raise serializers.ValidationError("Invalid status")
 
     class Meta:
         model = Shop
         exclude = ["delete_at", "is_active", "updated_at"]
+
+
+class ShowShopSerializer(CreateShopSerializer):
+    address = AddressSerializer()
+    rating = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_rating(obj: Shop):
+        return obj.rating if getattr(obj, "rating") else 0
 
 
 class ProductRatingSerializers(BaseSerializer):
