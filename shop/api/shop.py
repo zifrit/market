@@ -28,7 +28,7 @@ class ShopViewSet(ModelViewSet):
     ordering_fields = ["is_active"]
 
     def get_serializer_class(self):
-        if self.request.method in ["POST"]:
+        if self.request.method in ["POST", "PUT", "PATCH"]:
             return CreateShopSerializer
         return ShowShopSerializer
 
