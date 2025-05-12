@@ -14,6 +14,7 @@ from shop.api.serializers import (
     RetrieveProductSerializers,
     ProductRatingSerializers,
 )
+from clo.pagination import CustomPagination
 from context import swagger_json
 from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
@@ -31,6 +32,7 @@ class ProductViewSet(ModelViewSet):
     search_fields = ["name", "shop__name", "brands__name", "category__name"]
     filterset_class = ProductFilter
     ordering_fields = ["price", "enabled"]
+    pagination_class = CustomPagination
 
     def get_serializer_class(self):
         if self.request.method == "GET":
@@ -48,9 +50,12 @@ class ProductViewSet(ModelViewSet):
         return super().retrieve(request, *args, **kwargs)
 
     @extend_schema(
+        parameters=[
+            OpenApiParameter(name="page", type=int, description="Номер страницы"),
+        ],
         examples=[
             OpenApiExample("get example", value=swagger_json.product_list_retrieve)
-        ]
+        ],
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)

@@ -10,6 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 from shop.api.serializers import AddressSerializer, ExampleSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
+from clo.pagination import CustomPagination
 from context import swagger_json
 
 
@@ -18,9 +19,13 @@ class AddressViewSet(ModelViewSet):
     serializer_class = AddressSerializer
     filter_backends = [SearchFilter]
     search_fields = ["address"]
+    pagination_class = CustomPagination
 
     @extend_schema(
         request=swagger_json.crud_address,
+        parameters=[
+            OpenApiParameter(name="page", type=int, description="Номер страницы"),
+        ],
         responses={
             200: OpenApiResponse(
                 response=ExampleSerializer,

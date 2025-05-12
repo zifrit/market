@@ -1,5 +1,10 @@
 from django.db.models import Avg
-from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiResponse,
+    OpenApiExample,
+    OpenApiParameter,
+)
 from rest_framework.response import Response
 
 from context import swagger_json
@@ -12,6 +17,7 @@ from shop.api.serializers import (
     ShopRatingSerializer,
     ShopWorkScheduleSerializer,
 )
+from clo.pagination import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
@@ -26,6 +32,7 @@ class ShopViewSet(ModelViewSet):
     search_fields = ["name"]
     filterset_fields = ["is_active", "status"]
     ordering_fields = ["is_active"]
+    pagination_class = CustomPagination
 
     def get_serializer_class(self):
         if self.request.method in ["POST", "PUT", "PATCH"]:
@@ -50,7 +57,12 @@ class ShopViewSet(ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
-    @extend_schema(request=ShowShopSerializer)
+    @extend_schema(
+        request=ShowShopSerializer,
+        parameters=[
+            OpenApiParameter(name="page", type=int, description="Номер страницы"),
+        ],
+    )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
