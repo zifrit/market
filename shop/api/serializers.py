@@ -1,5 +1,6 @@
 from typing import List
 
+from django.db import transaction
 from rest_framework import serializers
 
 from shop.models import (
@@ -15,6 +16,8 @@ from shop.models import (
     ShopRating,
     Address,
     ShopWorkSchedules,
+    HumanImage,
+    ProductHumanImages,
 )
 
 
@@ -204,6 +207,107 @@ class ShopWorkScheduleSerializer(BaseSerializer):
     class Meta:
         model = ShopWorkSchedules
         exclude = ["delete_at"]
+
+
+class ProductHumanImagesSerializer(BaseSerializer):
+
+    class Meta:
+        model = ProductHumanImages
+        exclude = ["human_image", "id"]
+
+
+class HumanImageImagesSerializers(BaseSerializer):
+
+    class Meta:
+        model = ShopImages
+        fields = ["id", "image", "name"]
+
+
+class HumanImageSerializer(BaseSerializer):
+    product_human_images = ProductHumanImagesSerializer(many=True, required=False)
+    images = HumanImageImagesSerializers(many=True, read_only=True)
+
+    class Meta:
+        model = HumanImage
+        exclude = ["delete_at", "creator", "products"]
+
+    def to_representation(self, instance: HumanImage):
+        my_representation = super(HumanImageSerializer, self).to_representation(
+            instance
+        )
+        my_representation["product_human_images"] = [
+            {
+                "product": item.product_id,
+                "product_color": item.product_color_id,
+                "product_image": item.product_image_id,
+            }
+            for item in ProductHumanImages.objects.filter(
+                human_image=instance
+            )  # type: ProductHumanImages
+        ]
+        return my_representation
+
+    def validate_product_human_images(self, value):
+        if len(value) > 4:
+            raise serializers.ValidationError(
+                "Product human images can not be longer than 4"
+            )
+        return value
+
+    def create(self, validated_data):
+        print(validated_data)
+        product_human_images_data = validated_data.pop("product_human_images", [])
+        with transaction.atomic():
+            human_image = HumanImage.objects.create(**validated_data)
+
+            for product_human_image_data in product_human_images_data:
+                ProductHumanImages.objects.create(
+                    human_image=human_image, **product_human_image_data
+                )
+
+        return human_image
+
+    def update(self, instance: HumanImage, validated_data):
+        product_human_images_data = validated_data.pop("product_human_images", None)
+        with transaction.atomic():
+            instance.price = validated_data.get("price", instance.price)
+            instance.name = validated_data.get("name", instance.name)
+            instance.description = validated_data.get(
+                "description", instance.description
+            )
+            instance.save()
+
+            if product_human_images_data is not None:
+                instance.products.all().delete()
+                for product_human_image_data in product_human_images_data:
+                    ProductHumanImages.objects.create(
+                        human_image=instance, **product_human_image_data
+                    )
+
+        return instance
+
+
+class ViewHumanImageSerializer(BaseSerializer):
+    product_human_images = ProductHumanImagesSerializer(many=True, read_only=True)
+    images = HumanImageImagesSerializers(many=True, read_only=True)
+
+    def to_representation(self, instance: HumanImage):
+        my_representation = super(ViewHumanImageSerializer, self).to_representation(
+            instance
+        )
+        my_representation["product_human_images"] = [
+            {
+                "product": item.product_id,
+                "product_color": item.product_color_id,
+                "product_image": item.product_image_id,
+            }
+            for item in instance.products.all()  # type: ProductHumanImages
+        ]
+        return my_representation
+
+    class Meta:
+        model = HumanImage
+        fields = ["product_human_images", "name", "price", "id", "description"]
 
 
 class ExampleSerializer(serializers.Serializer):

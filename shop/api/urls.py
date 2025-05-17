@@ -8,6 +8,8 @@ from shop.api.product import (
     SizesViewSet,
     ColorsViewSet,
     ListCreateProductRaringView,
+    CreateListHumanImageView,
+    UpdateDeleteHumanImageView,
 )
 from shop.api.shop import (
     ShopViewSet,
@@ -21,6 +23,8 @@ from shop.api.images import (
     AddShopIconImage,
     DeleteProductImagesView,
     DeleteShopImagesView,
+    HumanImageImagesView,
+    DeleteHumanImageImagesView,
 )
 
 router = routers.SimpleRouter()
@@ -34,6 +38,13 @@ router.register("address", AddressViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("human-image", CreateListHumanImageView.as_view()),
+    path("human-image/<int:pk>/", UpdateDeleteHumanImageView.as_view()),
+    path("human-image/images", HumanImageImagesView.as_view()),
+    path(
+        "human-image/<int:id>/images/<int:image_id>",
+        DeleteHumanImageImagesView.as_view(),
+    ),
     path("products/images", ProductImagesViewSet.as_view()),
     path(
         "products/<int:id>/images/<int:image_id>",

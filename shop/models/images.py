@@ -58,3 +58,27 @@ class ShopImages(TimeStampMixin, CreatorMixin):
         db_table = "clo_shop_images"
         verbose_name = "ShopImage"
         verbose_name_plural = "ShopImages"
+
+
+class HumanImageImages(TimeStampMixin, CreatorMixin):
+    name = models.CharField(max_length=200, verbose_name="Название")
+    human_image = models.ForeignKey(
+        "shop.HumanImage",
+        on_delete=models.CASCADE,
+        verbose_name="Образ",
+        related_name="images",
+        blank=True,
+        null=True,
+    )
+    image = models.FileField(
+        upload_to="shop/images/%Y-%m-%d/",  # путь в S3
+        storage=S3Boto3Storage(),
+        null=True,
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ["created_at", "id"]
+        db_table = "clo_human_image_images"
+        verbose_name = "HumanImageImage"
+        verbose_name_plural = "HumanImageImages"

@@ -8,12 +8,20 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from shop.models import ProductImages, ShopImages, Shop, Product
+from shop.models import (
+    ProductImages,
+    ShopImages,
+    Shop,
+    Product,
+    HumanImage,
+    HumanImageImages,
+)
 from shop.api.serializers import (
     ProductImagesSerializers,
     ShopImagesSerializers,
     ExampleSerializer,
     ShowShopSerializer,
+    HumanImageImagesSerializers,
 )
 
 
@@ -240,3 +248,87 @@ class AddShopIconImage(generics.GenericAPIView):
             return Response(status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class HumanImageImagesView(generics.GenericAPIView):
+    queryset = HumanImage.objects.all()
+    serializer_class = ShopImagesSerializers
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="human_image",
+                description="Human Image identifier",
+                required=True,
+                type=int,
+            )
+        ],
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "binary",
+                        },
+                        "description": "Файлы для загрузки",
+                    }
+                },
+                "required": ["files"],
+            }
+        },
+        responses={
+            201: OpenApiResponse(
+                response=ExampleSerializer,
+                examples=[
+                    OpenApiExample(
+                        "post example",
+                        value={
+                            "human_image": 0,
+                            "image": "string",
+                            "name": "string",
+                        },
+                    )
+                ],
+            )
+        },
+        summary="Загрузка фото образа",
+    )
+    def post(self, request, *args, **kwargs):
+        images = []
+        for file in request.FILES.getlist("files"):
+            data = request.query_params
+            human_image = HumanImage.objects.filter(id=data.get("human_image")).first()
+            if not human_image:
+                return Response(
+                    {"ditail": "Human image not found"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            image = HumanImageImages.objects.create(
+                image=file,
+                name=file.name,
+                human_image_id=data.get("human_image"),
+            )
+            images.append(image)
+        if images:
+            return Response(
+                data=HumanImageImagesSerializers(instance=images, many=True).data,
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteHumanImageImagesView(generics.DestroyAPIView):
+    queryset = HumanImage.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        shop_id = kwargs["id"]
+        image_id = kwargs["image_id"]
+        if image := HumanImageImages.objects.filter(
+            id=image_id, shop_id=shop_id
+        ).first():
+            image.delete()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "not found"})

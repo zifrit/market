@@ -126,3 +126,37 @@ class ProductRating(TimeStampMixin, CreatorMixin):
         db_table = "clo_product_rating"
         verbose_name = "ProductRating"
         verbose_name_plural = "ProductRating"
+
+
+class ProductHumanImages(models.Model):
+    product = models.ForeignKey("shop.Product", on_delete=models.CASCADE)
+    human_image = models.ForeignKey("shop.HumanImage", on_delete=models.CASCADE)
+    product_color = models.ForeignKey("shop.Colors", on_delete=models.CASCADE)
+    product_image = models.ForeignKey("shop.ProductImages", on_delete=models.CASCADE)
+
+    objects = models.Manager()
+
+    class Meta:
+        db_table = "clo_product_human_images"
+        verbose_name = "ProductHumanImage"
+        verbose_name_plural = "ProductHumanImages"
+
+
+class HumanImage(TimeStampMixin, CreatorMixin):
+    products = models.ManyToManyField(
+        "shop.Product",
+        related_name="human_image",
+        verbose_name="Продукты",
+        through="ProductHumanImages",
+    )
+    description = models.TextField(verbose_name="Описание", blank=True, null=True)
+    name = models.CharField(
+        verbose_name="Название образа", blank=True, null=True, max_length=255
+    )
+    price = models.PositiveIntegerField(verbose_name="цена", blank=True, null=True)
+
+    class Meta:
+        ordering = ["created_at", "id"]
+        db_table = "clo_human_images"
+        verbose_name = "HumanImage"
+        verbose_name_plural = "HumanImages"
