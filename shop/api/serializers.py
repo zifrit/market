@@ -237,12 +237,20 @@ class HumanImageSerializer(BaseSerializer):
         )
         my_representation["product_human_images"] = [
             {
-                "product": item.product_id,
+                "product": {
+                    "name": item.product.name,
+                    "brands": item.product.brands_id,
+                },
                 "product_color": item.product_color_id,
-                "product_image": item.product_image_id,
+                "product_image": str(item.product_image.image.url),
             }
-            for item in ProductHumanImages.objects.filter(
-                human_image=instance
+            for item in ProductHumanImages.objects.filter(human_image=instance)
+            .select_related("product", "product_image")
+            .only(
+                "product__name",
+                "product__brands_id",
+                "product_image__image",
+                "product_color_id",
             )  # type: ProductHumanImages
         ]
         return my_representation
@@ -297,17 +305,34 @@ class ViewHumanImageSerializer(BaseSerializer):
         )
         my_representation["product_human_images"] = [
             {
-                "product": item.product_id,
+                "product": {
+                    "name": item.product.name,
+                    "brands": item.product.brands_id,
+                },
                 "product_color": item.product_color_id,
-                "product_image": item.product_image_id,
+                "product_image": str(item.product_image.image.url),
             }
-            for item in instance.products.all()  # type: ProductHumanImages
+            for item in ProductHumanImages.objects.filter(human_image=instance)
+            .select_related("product", "product_image")
+            .only(
+                "product__name",
+                "product__brands_id",
+                "product_image__image",
+                "product_color_id",
+            )  # type: ProductHumanImages
         ]
         return my_representation
 
     class Meta:
         model = HumanImage
-        fields = ["product_human_images", "name", "price", "id", "description"]
+        fields = [
+            "product_human_images",
+            "name",
+            "price",
+            "id",
+            "description",
+            "images",
+        ]
 
 
 class ExampleSerializer(serializers.Serializer):
