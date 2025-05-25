@@ -19,6 +19,7 @@ from shop.models import (
     ShopWorkSchedules,
     HumanImage,
     ProductHumanImages,
+    CustomUserFavoriteProduct,
 )
 
 
@@ -74,9 +75,10 @@ class ViewProductSerializers(ProductSerializers):
     sizes = serializers.SerializerMethodField()
     images = ProductImagesSerializers(many=True, read_only=True)
     rating = serializers.SerializerMethodField()
+    favorites = serializers.SerializerMethodField()
 
     @staticmethod
-    def get_rating(obj: Product):
+    def get_rating(obj: Product) -> int:
         return obj.rating if obj.rating else 0
 
     @staticmethod
@@ -90,6 +92,13 @@ class ViewProductSerializers(ProductSerializers):
         if obj.category:
             return {"id": obj.category.id, "name": obj.category.name}
         return {}
+
+    @staticmethod
+    def get_favorites(obj: Product) -> list[int]:
+        result = []
+        for favorite in obj.favorites.all():  # type: CustomUserFavoriteProduct
+            result.append(favorite.user_id)
+        return result
 
     @staticmethod
     def get_shop(obj: Product):
@@ -110,13 +119,11 @@ class ViewProductSerializers(ProductSerializers):
     def get_sizes(obj: Product) -> dict[str, List[dict]]:
 
         result = {"male": [], "female": []}
-        if obj.sizes.filter(gender=Sizes.GenderType.MALE).first():
-            size = obj.sizes.filter(gender=Sizes.GenderType.MALE).first()
-            result["male"].append({"id": size.id, "name": size.name})
-
-        if obj.sizes.filter(gender=Sizes.GenderType.FEMALE).first():
-            size = obj.sizes.filter(gender=Sizes.GenderType.FEMALE).first()
-            result["female"].append({"id": size.id, "name": size.name})
+        for size in obj.sizes.all():  # type: Sizes
+            if size.gender == Sizes.GenderType.MALE and not result["male"]:
+                result["male"].append({"name": size.name})
+            elif size.gender == Sizes.GenderType.FEMALE and not result["female"]:
+                result["female"].append({"name": size.name})
         return result
 
 
@@ -133,9 +140,9 @@ class RetrieveProductSerializers(ViewProductSerializers):
         result = {"male": [], "female": []}
         for size in obj.sizes.all():  # type: Sizes
             if size.gender == Sizes.GenderType.MALE:
-                result["male"].append({"id": size.id, "name": size.name})
+                result["male"].append({"name": size.name})
             elif size.gender == Sizes.GenderType.FEMALE:
-                result["female"].append({"id": size.id, "name": size.name})
+                result["female"].append({"name": size.name})
 
         return result
 

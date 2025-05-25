@@ -36,7 +36,13 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 class ProductViewSet(ModelViewSet):
     queryset = (
         Product.objects.select_related("brands", "category", "shop")
-        .prefetch_related("sizes", "color", "images__color", "ratings")
+        .prefetch_related(
+            "sizes",
+            "color",
+            "images__color",
+            "ratings",
+            "favorites",
+        )
         .annotate(rating=Avg("ratings__rating"))
     )
     serializer_class = ProductSerializers

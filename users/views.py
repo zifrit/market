@@ -1,3 +1,5 @@
+from django.db.models import Avg
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import generics, mixins
@@ -5,6 +7,11 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from clo.pagination import CustomPagination
+from context import swagger_json
+from shop.api.serializers import ViewProductSerializers
+from shop.models import Product, CustomUserFavoriteProduct
 from users.models import CustomUser
 from .serializers import (
     PhoneNumberSerializer,
@@ -82,3 +89,81 @@ class UserViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewS
 class UpdateUserView(generics.UpdateAPIView):
     serializer_class = UpdateCustomUserSerializer()
     queryset = CustomUser.objects.all()
+
+
+class CreateViewUserFavoriteView(generics.ListCreateAPIView):
+    serializer_class = ViewProductSerializers
+    pagination_class = CustomPagination
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return ViewProductSerializers
+        if self.request.method == "POST":
+            return None
+        return None
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+        favorites_products = (
+            Product.objects.filter(favorites__user_id=user_id)
+            .select_related("brands", "category", "shop")
+            .prefetch_related(
+                "sizes",
+                "color",
+                "images__color",
+                "ratings",
+                "favorites",
+            )
+            .annotate(rating=Avg("ratings__rating"))
+        )
+        return favorites_products
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(name="page", type=int, description="Номер страницы"),
+        ],
+        examples=[
+            OpenApiExample("get example", value=swagger_json.product_list_retrieve)
+        ],
+    )
+    def list(self, request, *args, **kwargs):
+        result = super().list(request, *args, **kwargs)
+        return result
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="product_id", type=int, description="Продукт", required=True
+            ),
+        ]
+    )
+    def post(self, request, *args, **kwargs):
+        product_id = self.request.query_params.get("product_id", False)
+        if not product_id:
+            return Response(
+                {"error": "product_id is required field"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        user_id = self.request.user.id
+        CustomUserFavoriteProduct.objects.create(user_id=user_id, product_id=product_id)
+        return Response(status=status.HTTP_200_OK)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="product_id", type=int, description="Продукт", required=True
+            ),
+        ]
+    )
+    def delete(self, request):
+        product_id = self.request.query_params.get("product_id", False)
+        if not product_id:
+            return Response(
+                {"error": "product_id is required field"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        user_id = self.request.user.id
+        CustomUserFavoriteProduct.objects.filter(
+            user_id=user_id, product_id=product_id
+        ).delete()
+        return Response(status=status.HTTP_200_OK)

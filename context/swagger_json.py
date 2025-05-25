@@ -26,6 +26,9 @@ product_list_retrieve = {
         }
     ],
     "created_at": "2025-04-08T17:14:30.295Z",
+    "external_id": "string",
+    "rating": 0,
+    "favorites": [0],
     "name": "string",
     "price": 2147483647,
     "description": "string",

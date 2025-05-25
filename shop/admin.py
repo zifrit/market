@@ -10,7 +10,7 @@ from shop.models import (
     ProductImages,
     Categories,
     Address,
-    FavoriteProduct,
+    CustomUserFavoriteProduct,
     ShopImages,
     ProductRating,
     ShopRating,
@@ -49,9 +49,10 @@ class AddressAdmin(admin.ModelAdmin):
     list_display = ("id",)
 
 
-@admin.register(FavoriteProduct)
-class FavoriteProductAdmin(admin.ModelAdmin):
-    list_display = ("id",)
+@admin.register(CustomUserFavoriteProduct)
+class CustomUserFavoriteProductAdmin(admin.ModelAdmin):
+    search_fields = ("id", "product__name", "user__phone")
+    list_display = ("id", "product_id", "product__name", "user_id", "user__phone")
 
 
 @admin.register(Product)

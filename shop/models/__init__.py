@@ -11,4 +11,4 @@ from .product import (
 )
 from .images import ProductImages, ShopImages, HumanImageImages
 from .address import Address
-from .favorite import FavoriteProduct
+from .favorite import CustomUserFavoriteProduct
