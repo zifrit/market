@@ -19,4 +19,5 @@ class ProductFilter(django_filters.rest_framework.FilterSet):
             "category_id",
             "quantity",
             "price",
+            "external_id",
         ]

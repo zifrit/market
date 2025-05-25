@@ -1,3 +1,4 @@
+from random import randint
 from typing import List
 
 from django.db import transaction
@@ -46,9 +47,23 @@ class ProductImagesSerializers(BaseSerializer):
 
 
 class ProductSerializers(BaseSerializer):
+    external_id = serializers.CharField(read_only=True)
+
     class Meta:
         model = Product
         exclude = ["delete_at", "enabled", "updated_at"]
+
+    def create(self, validated_data):
+        external_id = randint(10_000_000, 99_999_999)
+        while (
+            Product.objects.filter(external_id=external_id)
+            .only("id", "external_id")
+            .exists()
+        ):
+            external_id = randint(10_000_000, 99_999_999)
+
+        product = Product.objects.create(**validated_data, external_id=external_id)
+        return product
 
 
 class ViewProductSerializers(ProductSerializers):
