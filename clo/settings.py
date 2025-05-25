@@ -147,6 +147,7 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = os.environ.get("AWS_DEFAULT_ACL")
 AWS_S3_ADDRESSING_STYLE = os.environ.get("AWS_S3_ADDRESSING_STYLE")
 AWS_S3_SIGNATURE_VERSION = os.environ.get("AWS_S3_SIGNATURE_VERSION")
+AWS_QUERYSTRING_AUTH = True
 
 # Настройка storages
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
