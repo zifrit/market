@@ -5,16 +5,16 @@ from drf_spectacular.utils import (
     OpenApiResponse,
 )
 
+from clo.permission import CustomBasePermission
 from shop.models import Address
 from rest_framework.viewsets import ModelViewSet
 from shop.api.serializers import AddressSerializer, ExampleSerializer
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.filters import SearchFilter
 from clo.pagination import CustomPagination
 from context import swagger_json
 
 
-class AddressViewSet(ModelViewSet):
+class AddressViewSet(ModelViewSet, CustomBasePermission):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
     filter_backends = [SearchFilter]

@@ -6,8 +6,8 @@ from drf_spectacular.utils import (
 )
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
+from clo.permission import CustomBasePermission
 from shop.models import (
     ProductImages,
     ShopImages,
@@ -20,12 +20,11 @@ from shop.api.serializers import (
     ProductImagesSerializers,
     ShopImagesSerializers,
     ExampleSerializer,
-    ShowShopSerializer,
     HumanImageImagesSerializers,
 )
 
 
-class ProductImagesViewSet(generics.GenericAPIView):
+class ProductImagesViewSet(CustomBasePermission):
     queryset = ProductImages.objects.all()
     serializer_class = ProductImagesSerializers
 
@@ -99,7 +98,7 @@ class ProductImagesViewSet(generics.GenericAPIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class DeleteProductImagesView(generics.DestroyAPIView):
+class DeleteProductImagesView(generics.DestroyAPIView, CustomBasePermission):
     queryset = ProductImages.objects.all()
 
     def destroy(self, request, *args, **kwargs):
@@ -113,7 +112,7 @@ class DeleteProductImagesView(generics.DestroyAPIView):
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "not found"})
 
 
-class ShopImagesViewSet(generics.GenericAPIView):
+class ShopImagesViewSet(CustomBasePermission):
     queryset = ShopImages.objects.all()
     serializer_class = ShopImagesSerializers
 
@@ -182,7 +181,7 @@ class ShopImagesViewSet(generics.GenericAPIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class DeleteShopImagesView(generics.DestroyAPIView):
+class DeleteShopImagesView(generics.DestroyAPIView, CustomBasePermission):
     queryset = ShopImages.objects.all()
 
     def destroy(self, request, *args, **kwargs):
@@ -250,7 +249,7 @@ class AddShopIconImage(generics.GenericAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class HumanImageImagesView(generics.GenericAPIView):
+class HumanImageImagesView(CustomBasePermission):
     queryset = HumanImage.objects.all()
     serializer_class = ShopImagesSerializers
 
@@ -320,7 +319,7 @@ class HumanImageImagesView(generics.GenericAPIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class DeleteHumanImageImagesView(generics.DestroyAPIView):
+class DeleteHumanImageImagesView(generics.DestroyAPIView, CustomBasePermission):
     queryset = HumanImage.objects.all()
 
     def destroy(self, request, *args, **kwargs):

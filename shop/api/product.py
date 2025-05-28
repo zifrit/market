@@ -2,6 +2,9 @@ from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParamete
 from rest_framework import generics, status
 from rest_framework.response import Response
 
+from clo.permission import (
+    CustomBasePermission,
+)
 from shop.filters import ProductFilter
 from shop.models import (
     Product,
@@ -33,7 +36,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
 
-class ProductViewSet(ModelViewSet):
+class ProductViewSet(ModelViewSet, CustomBasePermission):
     queryset = (
         Product.objects.select_related("brands", "category", "shop")
         .prefetch_related(
@@ -93,35 +96,35 @@ class ProductViewSet(ModelViewSet):
         return super().create(request, *args, **kwargs)
 
 
-class BrandsViewSet(ModelViewSet):
+class BrandsViewSet(ModelViewSet, CustomBasePermission):
     queryset = Brands.objects.all()
     serializer_class = BrandsSerializer
     filter_backends = [SearchFilter]
     search_fields = ["name"]
 
 
-class CategoriesViewSet(ModelViewSet):
+class CategoriesViewSet(ModelViewSet, CustomBasePermission):
     queryset = Categories.objects.all()
     serializer_class = CategorySerializer
     filter_backends = [SearchFilter]
     search_fields = ["name"]
 
 
-class SizesViewSet(ModelViewSet):
+class SizesViewSet(ModelViewSet, CustomBasePermission):
     queryset = Sizes.objects.all()
     serializer_class = SizeSerializer
     filter_backends = [SearchFilter]
     search_fields = ["name"]
 
 
-class ColorsViewSet(ModelViewSet):
+class ColorsViewSet(ModelViewSet, CustomBasePermission):
     queryset = Colors.objects.all()
     serializer_class = ColorsSerializer
     filter_backends = [SearchFilter]
     search_fields = ["hex_color"]
 
 
-class ListCreateProductRaringView(generics.ListCreateAPIView):
+class ListCreateProductRatingView(generics.ListCreateAPIView):
     serializer_class = ProductRatingSerializers
 
     def get_queryset(self):
@@ -136,6 +139,7 @@ class ListCreateProductRaringView(generics.ListCreateAPIView):
 class CreateListHumanImageView(
     generics.CreateAPIView,
     generics.ListAPIView,
+    CustomBasePermission,
 ):
     queryset = HumanImage.objects.prefetch_related(
         Prefetch(
@@ -157,6 +161,7 @@ class UpdateDeleteHumanImageView(
     generics.DestroyAPIView,
     generics.RetrieveAPIView,
     generics.UpdateAPIView,
+    CustomBasePermission,
 ):
     queryset = HumanImage.objects.prefetch_related(
         Prefetch(

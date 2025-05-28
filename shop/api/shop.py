@@ -7,6 +7,7 @@ from drf_spectacular.utils import (
 )
 from rest_framework.response import Response
 
+from clo.permission import CustomBasePermission
 from context import swagger_json
 from shop.models import Shop, ShopRating, ShopWorkSchedules
 from rest_framework import generics, status
@@ -22,7 +23,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
 
-class ShopViewSet(ModelViewSet):
+class ShopViewSet(ModelViewSet, CustomBasePermission):
     queryset = (
         Shop.objects.prefetch_related("images", "ratings")
         .select_related("work_schedules")
@@ -80,7 +81,9 @@ class ListCreateShopRatingView(generics.ListCreateAPIView):
         return context
 
 
-class UpdateCreateWorkScheduleView(generics.UpdateAPIView, generics.CreateAPIView):
+class UpdateCreateWorkScheduleView(
+    generics.UpdateAPIView, generics.CreateAPIView, CustomBasePermission
+):
     queryset = ShopWorkSchedules.objects.all()
     serializer_class = ShopWorkScheduleSerializer
 
