@@ -61,6 +61,7 @@ LIBRARY_APP = [
     "storages",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    "django_prometheus",
     # 'django_celery_beat',
     # 'cachalot',
 ]
@@ -77,6 +78,7 @@ if DEBUG:
 INSTALLED_APPS = BASE_APPS + PROJECT + LIBRARY_APP
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -85,6 +87,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 if DEBUG:
