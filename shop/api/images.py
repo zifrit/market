@@ -324,10 +324,10 @@ class DeleteHumanImageImagesView(generics.DestroyAPIView):
     queryset = HumanImage.objects.all()
 
     def destroy(self, request, *args, **kwargs):
-        shop_id = kwargs["id"]
+        human_image_id = kwargs["id"]
         image_id = kwargs["image_id"]
         if image := HumanImageImages.objects.filter(
-            id=image_id, shop_id=shop_id
+            id=image_id, human_image_id=human_image_id
         ).first():
             image.delete()
             return Response(status=status.HTTP_200_OK)
