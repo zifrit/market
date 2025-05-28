@@ -138,6 +138,13 @@ class CreateListHumanImageView(
     )
     serializer_class = HumanImageSerializer
 
+    @extend_schema(
+        examples=[OpenApiExample("get example", value=swagger_json.human_images)]
+    )
+    def get(self, request, *args, **kwargs):
+        result = super().get(request, *args, **kwargs)
+        return result
+
 
 class UpdateDeleteHumanImageView(
     generics.DestroyAPIView,
@@ -152,6 +159,13 @@ class UpdateDeleteHumanImageView(
     )
 
     serializer_class = HumanImageSerializer
+
+    @extend_schema(
+        examples=[OpenApiExample("get example", value=swagger_json.human_images)]
+    )
+    def get(self, request, *args, **kwargs):
+        result = super().get(request, *args, **kwargs)
+        return result
 
     def update(self, request, *args, **kwargs):
         super().update(request, *args, **kwargs)

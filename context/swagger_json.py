@@ -116,3 +116,20 @@ work_schedule_retrieve = {
         "required": ["shop", "work_schedule"],
     }
 }
+
+human_images = {
+    "id": 0,
+    "images": [{"id": 0, "image": "string", "name": "string"}],
+    "created_at": "date time",
+    "updated_at": "date time",
+    "description": "string",
+    "name": "string",
+    "price": 0,
+    "product_human_images": [
+        {
+            "product": {"id": 0, "name": "string", "brands_id": 0},
+            "product_color": 0,
+            "product_image": {"path": "string", "id": 0, "name": "string"},
+        }
+    ],
+}
