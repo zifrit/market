@@ -260,18 +260,26 @@ class HumanImageSerializer(BaseSerializer):
         my_representation["product_human_images"] = [
             {
                 "product": {
+                    "id": item.product_id,
                     "name": item.product.name,
-                    "brands": item.product.brands_id,
+                    "brands_id": item.product.brands_id,
                 },
                 "product_color": item.product_color_id,
-                "product_image": str(item.product_image.image.url),
+                "product_image": {
+                    "path": str(item.product_image.image.url),
+                    "id": item.product_image.id,
+                    "name": item.product_image.name,
+                },
             }
             for item in ProductHumanImages.objects.filter(human_image=instance)
             .select_related("product", "product_image")
             .only(
+                "product_id",
                 "product__name",
                 "product__brands_id",
                 "product_image__image",
+                "product_image__id",
+                "product_image__name",
                 "product_color_id",
             )  # type: ProductHumanImages
         ]
