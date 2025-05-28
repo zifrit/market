@@ -122,8 +122,15 @@ class ColorsViewSet(ModelViewSet):
 
 
 class ListCreateProductRaringView(generics.ListCreateAPIView):
-    queryset = ProductRating.objects.all()
     serializer_class = ProductRatingSerializers
+
+    def get_queryset(self):
+        return ProductRating.objects.filter(product_id=self.kwargs["id"])
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["product_id"] = self.kwargs.get("id")
+        return context
 
 
 class CreateListHumanImageView(

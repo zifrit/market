@@ -56,7 +56,7 @@ urlpatterns = [
         DeleteShopImagesView.as_view(),
     ),
     path("shops/icon", AddShopIconImage.as_view()),
-    path("shops/rating", ListCreateShopRatingView.as_view()),
+    path("shops/<int:id>/rating", ListCreateShopRatingView.as_view()),
     path("shops/workwork-schedule", UpdateCreateWorkScheduleView.as_view()),
-    path("products/rating", ListCreateProductRaringView.as_view()),
+    path("products/<int:id>/rating", ListCreateProductRaringView.as_view()),
 ]

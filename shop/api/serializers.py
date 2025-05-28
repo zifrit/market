@@ -215,13 +215,25 @@ class ShowShopSerializer(CreateShopSerializer):
 class ProductRatingSerializers(BaseSerializer):
     class Meta:
         model = ProductRating
-        exclude = ["delete_at"]
+        exclude = ["delete_at", "product"]
+
+    def create(self, validated_data):
+        product_id = self.context.get("product_id")
+        product_rating = ProductRating.objects.create(
+            **validated_data, product_id=product_id
+        )
+        return product_rating
 
 
 class ShopRatingSerializer(BaseSerializer):
     class Meta:
         model = ShopRating
-        exclude = ["delete_at"]
+        exclude = ["delete_at", "shop"]
+
+    def create(self, validated_data):
+        shop_id = self.context.get("shop_id")
+        shop_rating = ShopRating.objects.create(**validated_data, shop_id=shop_id)
+        return shop_rating
 
 
 class ShopWorkScheduleSerializer(BaseSerializer):

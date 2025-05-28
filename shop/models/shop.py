@@ -87,7 +87,7 @@ class ShopWorkSchedules(TimeStampMixin, CreatorMixin):
 
 
 class ShopRating(TimeStampMixin, CreatorMixin):
-    product = models.ForeignKey(
+    shop = models.ForeignKey(
         "shop.Shop",
         on_delete=models.CASCADE,
         verbose_name="Магазин",

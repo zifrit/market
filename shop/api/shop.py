@@ -71,6 +71,14 @@ class ListCreateShopRatingView(generics.ListCreateAPIView):
     queryset = ShopRating.objects.all()
     serializer_class = ShopRatingSerializer
 
+    def get_queryset(self):
+        return ShopRating.objects.filter(shop_id=self.kwargs["id"])
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["shop_id"] = self.kwargs.get("id")
+        return context
+
 
 class UpdateCreateWorkScheduleView(generics.UpdateAPIView, generics.CreateAPIView):
     queryset = ShopWorkSchedules.objects.all()
