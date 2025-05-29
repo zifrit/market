@@ -55,6 +55,7 @@ class ProductSerializers(BaseSerializer):
         exclude = ["delete_at", "enabled", "updated_at"]
 
     def create(self, validated_data):
+        product = super().create(validated_data)
         external_id = randint(10_000_000, 99_999_999)
         while (
             Product.objects.filter(external_id=external_id)
@@ -62,8 +63,8 @@ class ProductSerializers(BaseSerializer):
             .exists()
         ):
             external_id = randint(10_000_000, 99_999_999)
-
-        product = Product.objects.create(**validated_data, external_id=external_id)
+        product.external_id = external_id
+        product.save()
         return product
 
 
