@@ -241,7 +241,7 @@ class ShopWorkScheduleSerializer(BaseSerializer):
         exclude = ["delete_at"]
 
 
-class ProductHumanImagesSerializer(BaseSerializer):
+class ProductHumanImagesSerializer(serializers.Serializer):
 
     class Meta:
         model = ProductHumanImages
