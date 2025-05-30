@@ -257,8 +257,8 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Documentation Askue",
-    "DESCRIPTION": "All api Askue",
+    "TITLE": "Documentation CLO",
+    "DESCRIPTION": "All api CLO",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
