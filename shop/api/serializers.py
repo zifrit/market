@@ -241,7 +241,7 @@ class ShopWorkScheduleSerializer(BaseSerializer):
         exclude = ["delete_at"]
 
 
-class ProductHumanImagesSerializer(serializers.Serializer):
+class ProductHumanImagesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductHumanImages
@@ -303,7 +303,6 @@ class HumanImageSerializer(BaseSerializer):
         return value
 
     def create(self, validated_data):
-        print(validated_data)
         product_human_images_data = validated_data.pop("product_human_images", [])
         with transaction.atomic():
             human_image = HumanImage.objects.create(**validated_data)
