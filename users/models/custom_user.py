@@ -6,10 +6,10 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 class CustomUserManager(UserManager):
 
-    def create_user(self, phone_number, password=None, **kwargs):
-        if not phone_number:
+    def create_user(self, phone, password=None, **kwargs):
+        if not phone:
             raise ValueError("Phone number is required")
-        user = self.model(phone_number=phone_number, **kwargs)
+        user = self.model(phone=phone, **kwargs)
         user.set_password(password)
         user.save(using=self._db)
         return user
