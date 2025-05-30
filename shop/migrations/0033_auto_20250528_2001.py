@@ -15,6 +15,7 @@ def create_test_users(apps, schema_editor):
         is_admin = CustomUser.objects.create(
             username="adminuser",
             phone="700000000001",
+            email="adminuser@mail.ru",
             first_name="first_name_is_admin",
             last_name="last_name_is_admin",
             middle_name="middle_name_is_admin",
@@ -23,7 +24,7 @@ def create_test_users(apps, schema_editor):
         is_owner = CustomUser.objects.create(
             username="owneruser",
             phone="700000000002",
-            password="owner",
+            email="owneruser@mail.ru",
             first_name="first_name_is_owner",
             last_name="last_name_is_owner",
             middle_name="middle_name_is_owner",
@@ -32,7 +33,7 @@ def create_test_users(apps, schema_editor):
         is_user = CustomUser.objects.create(
             username="useruser",
             phone="700000000003",
-            password="user",
+            email="useruser@mail.ru",
             first_name="first_name_is_user",
             last_name="last_name_is_user",
             middle_name="middle_name_is_user",
