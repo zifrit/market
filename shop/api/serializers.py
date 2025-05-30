@@ -24,10 +24,9 @@ from shop.models import (
 
 
 class BaseSerializer(serializers.ModelSerializer):
-    pass
-    # creator = serializers.HiddenField(
-    #     default=serializers.CurrentUserDefault(), required=False
-    # )
+    creator = serializers.HiddenField(
+        default=serializers.CurrentUserDefault(), required=False
+    )
 
 
 class ProductImagesSerializers(BaseSerializer):
