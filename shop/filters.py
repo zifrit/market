@@ -20,4 +20,5 @@ class ProductFilter(django_filters.rest_framework.FilterSet):
             "quantity",
             "price",
             "external_id",
+            "enabled",
         ]

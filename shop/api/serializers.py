@@ -49,7 +49,7 @@ class ProductSerializers(BaseSerializer):
 
     class Meta:
         model = Product
-        exclude = ["delete_at", "enabled", "updated_at"]
+        exclude = ["delete_at", "updated_at"]
 
     def create(self, validated_data):
         product = super().create(validated_data)
