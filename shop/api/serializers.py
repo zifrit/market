@@ -24,9 +24,7 @@ from shop.models import (
 
 
 class BaseSerializer(serializers.ModelSerializer):
-    creator = serializers.HiddenField(
-        default=serializers.CurrentUserDefault(), required=False
-    )
+    creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
 
 class ProductImagesSerializers(BaseSerializer):
@@ -263,7 +261,7 @@ class HumanImageSerializer(BaseSerializer):
 
     class Meta:
         model = HumanImage
-        exclude = ["delete_at", "creator", "products"]
+        exclude = ["delete_at", "products"]
 
     def to_representation(self, instance: HumanImage):
         my_representation = super(HumanImageSerializer, self).to_representation(
