@@ -58,6 +58,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "age",
             "birthday",
             "city",
+            "phone",
         ]
 
 
