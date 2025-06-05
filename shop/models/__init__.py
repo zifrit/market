@@ -1,4 +1,4 @@
-from .shop import Shop, ShopRating, ShopWorkSchedules
+from .shop import Shop, ShopRating, ShopWorkSchedules, ShopReport
 from .product import (
     Product,
     Colors,

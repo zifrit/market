@@ -81,7 +81,7 @@ class ShopReport(TimeStampMixin, CreatorMixin):
     future_owner = models.ForeignKey(
         "users.CustomUser",
         on_delete=models.PROTECT,
-        verbose_name="Создатель",
+        verbose_name="Будущий владелец",
         null=True,
         blank=True,
         related_name="shop_report",

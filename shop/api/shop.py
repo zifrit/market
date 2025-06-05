@@ -9,14 +9,17 @@ from rest_framework.response import Response
 
 from clo.permission import CustomBasePermission
 from context import swagger_json
-from shop.models import Shop, ShopRating, ShopWorkSchedules
-from rest_framework import generics, status
-from rest_framework.viewsets import ModelViewSet
+from shop.models import Shop, ShopRating, ShopWorkSchedules, ShopReport
+from rest_framework import generics, status, mixins
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from shop.api.serializers import (
     ShowShopSerializer,
     CreateShopSerializer,
     ShopRatingSerializer,
     ShopWorkScheduleSerializer,
+    UpdateShopSerializer,
+    ShopReportSerializer,
+    UpdateShopReportSerializer,
 )
 from clo.pagination import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
@@ -36,8 +39,10 @@ class ShopViewSet(ModelViewSet, CustomBasePermission):
     pagination_class = CustomPagination
 
     def get_serializer_class(self):
-        if self.request.method in ["POST", "PUT", "PATCH"]:
+        if self.request.method in ["POST"]:
             return CreateShopSerializer
+        elif self.request.method in ["PUT", "PATCH"]:
+            return UpdateShopSerializer
         return ShowShopSerializer
 
     @extend_schema(
@@ -101,3 +106,31 @@ class UpdateCreateWorkScheduleView(
 
     def patch(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class ShopReportViewSet(ModelViewSet):
+    queryset = ShopReport.objects.all()
+    serializer_class = ShopReportSerializer
+    pagination_class = CustomPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["status"]
+
+
+class ListCreateShopReportView(generics.ListCreateAPIView, CustomBasePermission):
+    queryset = ShopReport.objects.all()
+    serializer_class = ShopReportSerializer
+    pagination_class = CustomPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["status"]
+
+
+class UpdateRetrieveShopReportView(
+    generics.RetrieveUpdateAPIView, CustomBasePermission
+):
+    queryset = ShopReport.objects.all()
+    serializer_class = ShopReportSerializer
+
+
+class VerifiShopReportView(generics.UpdateAPIView, CustomBasePermission):
+    queryset = ShopReport.objects.all()
+    serializer_class = UpdateShopReportSerializer

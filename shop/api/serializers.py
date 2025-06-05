@@ -20,6 +20,7 @@ from shop.models import (
     HumanImage,
     ProductHumanImages,
     CustomUserFavoriteProduct,
+    ShopReport,
 )
 
 
@@ -196,9 +197,15 @@ class CreateShopSerializer(BaseSerializer):
             return value.upper()
         raise serializers.ValidationError("Invalid status")
 
+    def create(self, validated_data: dict) -> Shop:
+        shop = super().create(validated_data)
+        shop.from_is = "API"
+        shop.save(update_fields=["from_is"])
+        return shop
+
     class Meta:
         model = Shop
-        exclude = ["delete_at", "is_active", "updated_at"]
+        exclude = ["delete_at", "is_active", "updated_at", "from_is"]
 
 
 class ShowShopSerializer(CreateShopSerializer):
@@ -208,6 +215,51 @@ class ShowShopSerializer(CreateShopSerializer):
     @staticmethod
     def get_rating(obj: Shop):
         return obj.rating if getattr(obj, "rating") else 0
+
+
+class UpdateShopSerializer(CreateShopSerializer):
+    class Meta:
+        model = Shop
+        exclude = ["delete_at", "updated_at", "from_is"]
+
+
+class ShopReportSerializer(BaseSerializer):
+    class Meta:
+        model = ShopReport
+        read_only_fields = ["status"]
+        exclude = ["delete_at", "updated_at"]
+
+
+class UpdateShopReportSerializer(BaseSerializer):
+    class Meta:
+        model = ShopReport
+        fields = ["status"]
+
+    def update(self, instance: ShopReport, validated_data: dict) -> ShopReport:
+        with transaction.atomic():
+            if (
+                validated_data.get("status")
+                and validated_data.get("status").upper() == "APPROVE"
+            ):
+                self.create_shop_from_shop_reports(instance)
+            instance.status = (
+                validated_data.get("status")
+                if validated_data.get("status")
+                else instance.status
+            )
+            instance.save()
+            return instance
+
+    @staticmethod
+    def create_shop_from_shop_reports(instance: ShopReport) -> None:
+        Shop.objects.create(
+            name=instance.shop_name,
+            description=instance.description,
+            social_media=instance.social_media,
+            portfolio=instance.portfolio,
+            creator=instance.future_owner,
+            from_is="REPORTS",
+        )
 
 
 class ProductRatingSerializers(BaseSerializer):

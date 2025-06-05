@@ -14,6 +14,7 @@ from shop.models import (
     ShopImages,
     ProductRating,
     ShopRating,
+    ShopReport,
 )
 
 
@@ -22,6 +23,11 @@ class ShopAdmin(admin.ModelAdmin):
     list_display = ("id", "name")
     list_display_links = ("id", "name")
     search_fields = ("name",)
+
+
+@admin.register(ShopReport)
+class ShopReportAdmin(admin.ModelAdmin):
+    list_display = ("id",)
 
 
 @admin.register(Sizes)
