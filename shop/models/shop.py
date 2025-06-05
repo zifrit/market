@@ -22,6 +22,15 @@ class Shop(TimeStampMixin, CreatorMixin):
         max_length=50, choices=ShopStatus.choices, default=ShopStatus.WORK
     )
     description = models.TextField(blank=True, null=True, verbose_name="Описание")
+    social_media = models.CharField(
+        verbose_name="Социальная сеть", blank=True, null=True, max_length=255
+    )
+    portfolio = models.CharField(
+        verbose_name="Портфолио", blank=True, null=True, max_length=255
+    )
+    from_is = models.CharField(
+        verbose_name="Создан откуда", blank=True, null=True, max_length=255
+    )
     address = models.ForeignKey(
         "shop.Address",
         on_delete=models.PROTECT,
@@ -51,7 +60,15 @@ class Shop(TimeStampMixin, CreatorMixin):
 
 
 class ShopReport(TimeStampMixin, CreatorMixin):
+    class ReportStatus(models.TextChoices):
+        IN_PROGRESS = "IN_PROGRESS"
+        APPROVE = "APPROVE"
+        REJECTED = "REJECTED"
+
     name = models.CharField(verbose_name="Имя", blank=True, null=True, max_length=255)
+    status = models.CharField(
+        max_length=50, choices=ReportStatus.choices, default=ReportStatus.IN_PROGRESS
+    )
     shop_name = models.CharField(
         verbose_name="Название магазина", blank=True, null=True, max_length=255
     )
@@ -61,6 +78,15 @@ class ShopReport(TimeStampMixin, CreatorMixin):
     portfolio = models.CharField(
         verbose_name="Портфолио", blank=True, null=True, max_length=255
     )
+    future_owner = models.ForeignKey(
+        "users.CustomUser",
+        on_delete=models.PROTECT,
+        verbose_name="Создатель",
+        null=True,
+        blank=True,
+        related_name="shop_report",
+    )
+    description = models.TextField(blank=True, null=True, verbose_name="Описание")
 
     class Meta:
         ordering = ["created_at", "id"]
