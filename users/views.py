@@ -3,7 +3,6 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExampl
 from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import generics, mixins
-from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -43,17 +42,20 @@ class VerifyCodeView(generics.GenericAPIView):
         serializer = VerifyCodeSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data["user"]
+            user_groups = serializer.validated_data["user_groups"]
             verification = serializer.validated_data["verification"]
             verification.is_used = True  # Помечаем код как использованный
             verification.save()
 
             # Генерируем refresh и access токены для пользователя
             refresh = RefreshToken.for_user(user)
+            access = refresh.access_token
+            access["roles"] = user_groups
             return Response(
                 {
                     "message": "Успешный вход",
                     "refresh": str(refresh),  # Refresh-токен
-                    "access": str(refresh.access_token),  # Access-токен
+                    "access": str(access),  # Access-токен
                 },
                 status=status.HTTP_200_OK,
             )

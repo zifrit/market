@@ -1,4 +1,7 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+
 from users.models import CustomUser, VerificationCode, UserData
 import random
 
@@ -33,10 +36,15 @@ class VerifyCodeSerializer(serializers.Serializer):
             verification = VerificationCode.objects.filter(
                 user=user, code=code, is_used=False
             ).latest("created_at")
+            user_groups = list(user.groups.values_list("name", flat=True))
+
+            if not verification:
+                raise VerificationCode.DoesNotExist
         except (CustomUser.DoesNotExist, VerificationCode.DoesNotExist):
             raise serializers.ValidationError("Неверный номер телефона или код")
         data["user"] = user
         data["verification"] = verification
+        data["user_groups"] = user_groups
         return data
 
 
