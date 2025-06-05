@@ -80,25 +80,33 @@ class UserViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewS
             return Response(
                 {"error": "user not found"}, status=status.HTTP_404_NOT_FOUND
             )
-        if custom_user.id != request.user.id and not request.user.is_superuser:
+        if (
+            custom_user.id == request.user.id
+            or request.user.is_superuser
+            or "IsAdmin" in request.user_groups_name
+        ):
+            if serializer.is_valid():
+                serializer.update(custom_user, serializer.validated_data)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
             return Response(status=status.HTTP_403_FORBIDDEN)
-
-        if serializer.is_valid():
-            serializer.update(custom_user, serializer.validated_data)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
         result = super().retrieve(request, *args, **kwargs)
-        if self.get_object().id != request.user.id and not request.user.is_superuser:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-        return result
+        if (
+            self.get_object().id == request.user.id
+            or request.user.is_superuser
+            or "IsAdmin" in request.user_groups_name
+        ):
+            return result
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
     def list(self, request, *args, **kwargs):
         result = super().list(request, *args, **kwargs)
-        if not request.user.is_superuser:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-        return result
+        if request.user.is_superuser or "IsAdmin" in request.user_groups_name:
+            return result
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 class UpdateUserView(generics.UpdateAPIView):
