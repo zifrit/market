@@ -20,7 +20,7 @@ from shop.models import (
 
 @admin.register(Shop)
 class ShopAdmin(admin.ModelAdmin):
-    list_display = ("id", "name")
+    list_display = ("id", "name", "creator")
     list_display_links = ("id", "name")
     search_fields = ("name",)
 

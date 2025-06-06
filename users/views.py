@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from clo.pagination import CustomPagination
 from context import swagger_json
 from shop.api.serializers import ViewProductSerializers
-from shop.models import Product, CustomUserFavoriteProduct
+from shop.models import Product, CustomUserFavoriteProduct, Shop
 from users.models import CustomUser
 from .serializers import (
     PhoneNumberSerializer,
@@ -51,6 +51,11 @@ class VerifyCodeView(generics.GenericAPIView):
             refresh = RefreshToken.for_user(user)
             access = refresh.access_token
             access["roles"] = user_groups
+            if "IsOwner" in user_groups:
+                shop_ids = Shop.objects.filter(creator=user).values_list(
+                    "id", flat=True
+                )
+                access["shop_ids"] = list(shop_ids)
             return Response(
                 {
                     "message": "Успешный вход",
