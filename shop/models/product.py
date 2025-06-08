@@ -36,6 +36,7 @@ class Product(TimeStampMixin, CreatorMixin):
         "shop.Shop",
         verbose_name="магазин",
         on_delete=models.CASCADE,
+        related_name="products",
         blank=True,
         null=True,
     )

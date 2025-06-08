@@ -1,4 +1,4 @@
-from django.db.models import Avg
+from django.db.models import Avg, Count, Prefetch
 from drf_spectacular.utils import (
     extend_schema,
     OpenApiResponse,
@@ -29,8 +29,12 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 class ShopViewSet(ModelViewSet, CustomBasePermission):
     queryset = (
         Shop.objects.prefetch_related("images", "ratings")
-        .select_related("work_schedules")
-        .annotate(rating=Avg("ratings__rating"))
+        .select_related("work_schedules", "address")
+        .annotate(
+            rating=Avg("ratings__rating"),
+            total_human_images=Count("human_images"),
+            total_products=Count("products"),
+        )
     )
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     search_fields = ["name"]

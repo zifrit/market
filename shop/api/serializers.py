@@ -211,6 +211,8 @@ class CreateShopSerializer(BaseSerializer):
 class ShowShopSerializer(CreateShopSerializer):
     address = AddressSerializer()
     rating = serializers.SerializerMethodField()
+    total_human_images = serializers.IntegerField(read_only=True)
+    total_products = serializers.IntegerField(read_only=True)
 
     @staticmethod
     def get_rating(obj: Shop):
