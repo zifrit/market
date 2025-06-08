@@ -16,4 +16,4 @@ class Address(TimeStampMixin, CreatorMixin):
         verbose_name_plural = "Addresses"
 
     def __str__(self):
-        return self.address
+        return f"{self.address}"
