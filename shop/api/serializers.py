@@ -237,6 +237,12 @@ class UpdateShopReportSerializer(BaseSerializer):
 
     def update(self, instance: ShopReport, validated_data: dict) -> ShopReport:
         with transaction.atomic():
+
+            if instance.status == ShopReport.ReportStatus.APPROVE:
+                raise serializers.ValidationError(
+                    {"error": "Shop report status cannot be updated after APPROVE"}
+                )
+
             if (
                 validated_data.get("status")
                 and validated_data.get("status").upper() == "APPROVE"

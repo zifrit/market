@@ -14,3 +14,6 @@ class Address(TimeStampMixin, CreatorMixin):
         db_table = "clo_address"
         verbose_name = "Address"
         verbose_name_plural = "Addresses"
+
+    def __str__(self):
+        return self.address

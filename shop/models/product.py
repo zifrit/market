@@ -49,6 +49,9 @@ class Product(TimeStampMixin, CreatorMixin):
         verbose_name = "Product"
         verbose_name_plural = "Products"
 
+    def __str__(self):
+        return self.name
+
 
 class Colors(TimeStampMixin, CreatorMixin):
     name = models.CharField(
@@ -64,6 +67,9 @@ class Colors(TimeStampMixin, CreatorMixin):
         verbose_name = "Color"
         verbose_name_plural = "Colors"
 
+    def __str__(self):
+        return f"{self.name} {self.hex_color}"
+
 
 class Brands(TimeStampMixin, CreatorMixin):
     key = models.CharField(blank=True, null=True, max_length=255)
@@ -77,6 +83,9 @@ class Brands(TimeStampMixin, CreatorMixin):
         verbose_name = "Brand"
         verbose_name_plural = "Brands"
 
+    def __str__(self):
+        return f"{self.name} {self.key}"
+
 
 class Categories(TimeStampMixin, CreatorMixin):
     name = models.CharField(
@@ -88,6 +97,9 @@ class Categories(TimeStampMixin, CreatorMixin):
         db_table = "clo_categories"
         verbose_name = "Category"
         verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return self.name
 
 
 class Sizes(TimeStampMixin, CreatorMixin):
@@ -107,6 +119,9 @@ class Sizes(TimeStampMixin, CreatorMixin):
         db_table = "clo_sizes"
         verbose_name = "Size"
         verbose_name_plural = "Sizes"
+
+    def __str__(self):
+        return f"{self.name} {self.gender}"
 
 
 class ProductRating(TimeStampMixin, CreatorMixin):
@@ -160,3 +175,6 @@ class HumanImage(TimeStampMixin, CreatorMixin):
         db_table = "clo_human_images"
         verbose_name = "HumanImage"
         verbose_name_plural = "HumanImages"
+
+    def __str__(self):
+        return self.name

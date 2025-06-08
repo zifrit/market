@@ -35,6 +35,9 @@ class ProductImages(TimeStampMixin, CreatorMixin):
         verbose_name = "ProductImage"
         verbose_name_plural = "ProductImages"
 
+    def __str__(self):
+        return self.name
+
 
 class ShopImages(TimeStampMixin, CreatorMixin):
     name = models.CharField(max_length=200, verbose_name="Название")
@@ -59,6 +62,9 @@ class ShopImages(TimeStampMixin, CreatorMixin):
         verbose_name = "ShopImage"
         verbose_name_plural = "ShopImages"
 
+    def __str__(self):
+        return self.name
+
 
 class HumanImageImages(TimeStampMixin, CreatorMixin):
     name = models.CharField(max_length=200, verbose_name="Название")
@@ -82,3 +88,6 @@ class HumanImageImages(TimeStampMixin, CreatorMixin):
         db_table = "clo_human_image_images"
         verbose_name = "HumanImageImage"
         verbose_name_plural = "HumanImageImages"
+
+    def __str__(self):
+        return self.name

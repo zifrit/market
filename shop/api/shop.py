@@ -131,6 +131,6 @@ class UpdateRetrieveShopReportView(
     serializer_class = ShopReportSerializer
 
 
-class VerifiShopReportView(generics.UpdateAPIView, CustomBasePermission):
+class VerifyShopReportView(generics.UpdateAPIView, CustomBasePermission):
     queryset = ShopReport.objects.all()
     serializer_class = UpdateShopReportSerializer

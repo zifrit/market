@@ -17,7 +17,7 @@ from shop.api.shop import (
     UpdateCreateWorkScheduleView,
     ListCreateShopReportView,
     UpdateRetrieveShopReportView,
-    VerifiShopReportView,
+    VerifyShopReportView,
 )
 from shop.api.address import AddressViewSet
 from shop.api.images import (
@@ -61,7 +61,7 @@ urlpatterns = [
     path("shops/icon", AddShopIconImage.as_view()),
     path("shops/report", ListCreateShopReportView.as_view()),
     path("shops/report/<int:pk>", UpdateRetrieveShopReportView.as_view()),
-    path("shops/report/<int:pk>/verifi", VerifiShopReportView.as_view()),
+    path("shops/report/<int:pk>/verify", VerifyShopReportView.as_view()),
     path("shops/<int:id>/rating", ListCreateShopRatingView.as_view()),
     path("shops/workwork-schedule", UpdateCreateWorkScheduleView.as_view()),
     path("products/<int:id>/rating", ListCreateProductRatingView.as_view()),

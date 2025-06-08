@@ -58,6 +58,9 @@ class Shop(TimeStampMixin, CreatorMixin):
     def get_active_shops(cls):
         return cls.objects.filter(is_active=True)
 
+    def __str__(self):
+        return self.name
+
 
 class ShopReport(TimeStampMixin, CreatorMixin):
     class ReportStatus(models.TextChoices):
@@ -93,6 +96,9 @@ class ShopReport(TimeStampMixin, CreatorMixin):
         db_table = "clo_shop_report"
         verbose_name = "ShopReport"
         verbose_name_plural = "ShopReports"
+
+    def __str__(self):
+        return f"Shop report - {self.name}"
 
 
 class ShopWorkSchedules(TimeStampMixin, CreatorMixin):
