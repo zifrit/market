@@ -33,7 +33,11 @@ class IsOwnerOrIsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user.is_superuser or "IsAdmin" in request.user_groups_name
+        return (
+            request.user.is_superuser
+            or "IsAdmin" in request.user_groups_name
+            or "IsOwner" in request.user_groups_name
+        )
 
 
 class IsSuperUserOrAdmin(permissions.BasePermission):
