@@ -107,6 +107,7 @@ class HumanImageAdmin(admin.ModelAdmin):
         "id",
         "name",
         "price",
+        "shop",
     )
 
 

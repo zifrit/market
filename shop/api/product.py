@@ -148,6 +148,11 @@ class CreateListHumanImageView(
         "images",
     )
     serializer_class = HumanImageSerializer
+    pagination_class = CustomPagination
+    filter_backends = [
+        DjangoFilterBackend,
+    ]
+    filterset_fields = ["shop_id"]
 
     @extend_schema(
         examples=[OpenApiExample("get example", value=swagger_json.human_images)]

@@ -168,6 +168,14 @@ class HumanImage(TimeStampMixin, CreatorMixin):
     name = models.CharField(
         verbose_name="Название образа", blank=True, null=True, max_length=255
     )
+    shop = models.ForeignKey(
+        "shop.Shop",
+        on_delete=models.CASCADE,
+        verbose_name="Магазин",
+        related_name="human_images",
+        blank=True,
+        null=True,
+    )
     price = models.PositiveIntegerField(verbose_name="цена", blank=True, null=True)
 
     class Meta:
