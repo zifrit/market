@@ -1,5 +1,5 @@
 from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParameter
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework.response import Response
 
 from clo.permission import (
@@ -15,6 +15,8 @@ from shop.models import (
     ProductRating,
     HumanImage,
     ProductHumanImages,
+    ProductImages,
+    HumanImageImages,
 )
 from rest_framework.viewsets import ModelViewSet
 from shop.api.serializers import (
@@ -35,16 +37,23 @@ from django.db.models import Avg, Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
+from shop.services.custom_view import CustomModelViewSet, CustomDestroyAPIView
 
-class ProductViewSet(ModelViewSet, CustomBasePermission):
+
+class ProductViewSet(CustomModelViewSet, CustomBasePermission):
     queryset = (
         Product.objects.select_related("brands", "category", "shop")
         .prefetch_related(
             "sizes",
             "color",
-            "images__color",
             "ratings",
             "favorites",
+            Prefetch(
+                "images",
+                queryset=ProductImages.objects.select_related("color").filter(
+                    delete_at__isnull=True
+                ),
+            ),
         )
         .annotate(rating=Avg("ratings__rating"))
     )
@@ -96,29 +105,29 @@ class ProductViewSet(ModelViewSet, CustomBasePermission):
         return super().create(request, *args, **kwargs)
 
 
-class BrandsViewSet(ModelViewSet, CustomBasePermission):
-    queryset = Brands.objects.all()
+class BrandsViewSet(CustomModelViewSet, CustomBasePermission):
+    queryset = Brands.objects.filter(delete_at__isnull=True)
     serializer_class = BrandsSerializer
     filter_backends = [SearchFilter]
     search_fields = ["name"]
 
 
-class CategoriesViewSet(ModelViewSet, CustomBasePermission):
-    queryset = Categories.objects.all()
+class CategoriesViewSet(CustomModelViewSet, CustomBasePermission):
+    queryset = Categories.objects.filter(delete_at__isnull=True)
     serializer_class = CategorySerializer
     filter_backends = [SearchFilter]
     search_fields = ["name"]
 
 
-class SizesViewSet(ModelViewSet, CustomBasePermission):
-    queryset = Sizes.objects.all()
+class SizesViewSet(CustomModelViewSet, CustomBasePermission):
+    queryset = Sizes.objects.filter(delete_at__isnull=True)
     serializer_class = SizeSerializer
     filter_backends = [SearchFilter]
     search_fields = ["name"]
 
 
-class ColorsViewSet(ModelViewSet, CustomBasePermission):
-    queryset = Colors.objects.all()
+class ColorsViewSet(CustomModelViewSet, CustomBasePermission):
+    queryset = Colors.objects.filter(delete_at__isnull=True)
     serializer_class = ColorsSerializer
     filter_backends = [SearchFilter]
     search_fields = ["hex_color"]
@@ -143,9 +152,8 @@ class CreateListHumanImageView(
 ):
     queryset = HumanImage.objects.prefetch_related(
         Prefetch(
-            "products", queryset=ProductHumanImages.objects.select_related("product")
+            "images", queryset=HumanImageImages.objects.filter(delete_at__isnull=True)
         ),
-        "images",
     )
     serializer_class = HumanImageSerializer
     pagination_class = CustomPagination
@@ -163,7 +171,7 @@ class CreateListHumanImageView(
 
 
 class UpdateDeleteHumanImageView(
-    generics.DestroyAPIView,
+    CustomDestroyAPIView,
     generics.RetrieveAPIView,
     generics.UpdateAPIView,
     CustomBasePermission,
@@ -173,7 +181,7 @@ class UpdateDeleteHumanImageView(
             "products", queryset=ProductHumanImages.objects.select_related("product")
         ),
         "images",
-    )
+    ).filter(delete_at__isnull=True)
 
     serializer_class = HumanImageSerializer
 

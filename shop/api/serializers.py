@@ -316,7 +316,6 @@ class HumanImageImagesSerializers(BaseSerializer):
 
 
 class HumanImageSerializer(BaseSerializer):
-    product_human_images = ProductHumanImagesSerializer(many=True, required=False)
     images = HumanImageImagesSerializers(many=True, read_only=True)
 
     class Meta:
@@ -395,7 +394,6 @@ class HumanImageSerializer(BaseSerializer):
 
 
 class ViewHumanImageSerializer(BaseSerializer):
-    product_human_images = ProductHumanImagesSerializer(many=True, read_only=True)
     images = HumanImageImagesSerializers(many=True, read_only=True)
 
     def to_representation(self, instance: HumanImage):

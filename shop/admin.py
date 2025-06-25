@@ -22,9 +22,24 @@ from shop.models import (
 
 @admin.register(Shop)
 class ShopAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "creator")
-    list_display_links = ("id", "name")
+    list_display = (
+        "id",
+        "name",
+        "creator",
+        "created_at",
+        "status",
+        "delete_at",
+    )
+    list_display_links = (
+        "id",
+        "name",
+    )
     search_fields = ("name",)
+    list_filter = (
+        "status",
+        "created_at",
+        "delete_at",
+    )
 
 
 @admin.register(ShopReport)
@@ -34,7 +49,11 @@ class ShopReportAdmin(admin.ModelAdmin):
         "status",
         "future_owner",
         "creator",
+        "status",
+        "created_at",
+        "delete_at",
     )
+    list_filter = ("status", "created_at", "delete_at")
 
 
 @admin.register(Sizes)
@@ -44,6 +63,8 @@ class SizesAdmin(admin.ModelAdmin):
         "creator",
         "name",
         "gender",
+        "created_at",
+        "delete_at",
     )
 
 
@@ -54,6 +75,8 @@ class ColorsAdmin(admin.ModelAdmin):
         "creator",
         "name",
         "hex_color",
+        "created_at",
+        "delete_at",
     )
 
 
@@ -64,6 +87,8 @@ class BrandsAdmin(admin.ModelAdmin):
         "creator",
         "name",
         "key",
+        "created_at",
+        "delete_at",
     )
 
 
@@ -73,6 +98,8 @@ class CategoriesAdmin(admin.ModelAdmin):
         "id",
         "creator",
         "name",
+        "created_at",
+        "delete_at",
     )
 
 
@@ -82,6 +109,8 @@ class AddressAdmin(admin.ModelAdmin):
         "id",
         "creator",
         "address",
+        "created_at",
+        "delete_at",
     )
 
 
@@ -98,6 +127,7 @@ class CustomUserFavoriteProductAdmin(admin.ModelAdmin):
         "product__name",
         "user_id",
         "user__phone",
+        "created_at",
     )
 
 
@@ -108,6 +138,8 @@ class HumanImageAdmin(admin.ModelAdmin):
         "name",
         "price",
         "shop",
+        "created_at",
+        "delete_at",
     )
 
 
@@ -118,6 +150,8 @@ class ProductAdmin(admin.ModelAdmin):
         "name",
         "price",
         "quantity",
+        "created_at",
+        "delete_at",
     )
 
 
@@ -128,6 +162,8 @@ class ProductImagesAdmin(admin.ModelAdmin):
         "name",
         "image",
         "product",
+        "created_at",
+        "delete_at",
     )
 
 
@@ -138,19 +174,37 @@ class ShopImagesAdmin(admin.ModelAdmin):
         "name",
         "shop",
         "image",
+        "created_at",
+        "delete_at",
     )
 
 
 @admin.register(HumanImageImages)
 class HumanImageImagesAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "image")
+    list_display = (
+        "id",
+        "name",
+        "image",
+        "created_at",
+        "delete_at",
+    )
 
 
 @admin.register(ProductRating)
 class ProductRatingAdmin(admin.ModelAdmin):
-    list_display = ("id", "rating")
+    list_display = (
+        "id",
+        "rating",
+        "created_at",
+        "delete_at",
+    )
 
 
 @admin.register(ShopRating)
 class ShopRatingAdmin(admin.ModelAdmin):
-    list_display = ("id", "rating")
+    list_display = (
+        "id",
+        "rating",
+        "created_at",
+        "delete_at",
+    )

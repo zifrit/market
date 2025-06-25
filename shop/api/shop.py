@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from clo.permission import CustomBasePermission
 from context import swagger_json
-from shop.models import Shop, ShopRating, ShopWorkSchedules, ShopReport
+from shop.models import Shop, ShopRating, ShopWorkSchedules, ShopReport, ShopImages
 from rest_framework import generics, status, mixins
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from shop.api.serializers import (
@@ -25,16 +25,25 @@ from clo.pagination import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
+from shop.services.custom_view import CustomModelViewSet
 
-class ShopViewSet(ModelViewSet, CustomBasePermission):
+
+class ShopViewSet(CustomModelViewSet, CustomBasePermission):
     queryset = (
-        Shop.objects.prefetch_related("images", "ratings")
+        Shop.objects.prefetch_related(
+            Prefetch(
+                "images",
+                queryset=ShopImages.objects.filter(delete_at__isnull=True),
+            ),
+            "ratings",
+        )
         .select_related("work_schedules", "address")
         .annotate(
             rating=Avg("ratings__rating"),
             total_human_images=Count("human_images"),
             total_products=Count("products"),
         )
+        .filter(delete_at__isnull=True)
     )
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     search_fields = ["name"]
@@ -112,8 +121,8 @@ class UpdateCreateWorkScheduleView(
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class ShopReportViewSet(ModelViewSet):
-    queryset = ShopReport.objects.all()
+class ShopReportViewSet(CustomModelViewSet):
+    queryset = ShopReport.objects.filter(delete_at__isnull=True)
     serializer_class = ShopReportSerializer
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend]

@@ -1,3 +1,4 @@
+from django.utils import timezone
 from drf_spectacular.utils import (
     extend_schema,
     OpenApiExample,
@@ -25,7 +26,7 @@ from shop.api.serializers import (
 
 
 class ProductImagesViewSet(CustomBasePermission):
-    queryset = ProductImages.objects.all()
+    queryset = ProductImages.objects.filter(delete_at__isnull=True)
     serializer_class = ProductImagesSerializers
 
     @extend_schema(
@@ -107,7 +108,8 @@ class DeleteProductImagesView(generics.DestroyAPIView, CustomBasePermission):
         if image := ProductImages.objects.filter(
             id=image_id, product_id=product_id
         ).first():
-            image.delete()
+            image.delete_at = timezone.now()
+            image.save()
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "not found"})
 
@@ -188,7 +190,8 @@ class DeleteShopImagesView(generics.DestroyAPIView, CustomBasePermission):
         shop_id = kwargs["id"]
         image_id = kwargs["image_id"]
         if image := ShopImages.objects.filter(id=image_id, shop_id=shop_id).first():
-            image.delete()
+            image.delete_at = timezone.now()
+            image.save()
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "not found"})
 
@@ -328,6 +331,7 @@ class DeleteHumanImageImagesView(generics.DestroyAPIView, CustomBasePermission):
         if image := HumanImageImages.objects.filter(
             id=image_id, human_image_id=human_image_id
         ).first():
-            image.delete()
+            image.delete_at = timezone.now()
+            image.save()
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "not found"})
