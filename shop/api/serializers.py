@@ -1,9 +1,13 @@
+from datetime import datetime
 from random import randint
 from typing import List
 
 from django.db import transaction
 from rest_framework import serializers
 
+from frameworks.ch_tables import ProductStatusHistory, ImagesStatusHistory
+from frameworks.ch_tables.tables import Tables
+from frameworks.kafak.client import KafkaLogSender
 from shop.models import (
     ProductImages,
     Product,
@@ -64,6 +68,17 @@ class ProductSerializers(BaseSerializer):
         product.external_id = external_id
         product.save()
         return product
+
+    def update(self, instance: Product, validated_data):
+        if instance.enabled != validated_data.get("enabled"):
+            data = ProductStatusHistory(
+                status=str(validated_data.get("enabled")),
+                dt=datetime.now(),
+                entity_id=instance.id,
+            )
+            KafkaLogSender.save_table_data([data], Tables.PRODUCT_STATUS_HISTORY)
+        obj = super().update(instance, validated_data)
+        return obj
 
 
 class ViewProductSerializers(ProductSerializers):
@@ -375,9 +390,19 @@ class HumanImageSerializer(BaseSerializer):
 
     def update(self, instance: HumanImage, validated_data):
         product_human_images_data = validated_data.pop("product_human_images", None)
+
+        if instance.enabled != validated_data.get("enabled"):
+            data = ImagesStatusHistory(
+                status=str(validated_data.get("enabled")),
+                dt=datetime.now(),
+                entity_id=instance.id,
+            )
+            KafkaLogSender.save_table_data([data], Tables.IMAGES_STATUS_HISTORY)
+
         with transaction.atomic():
             instance.price = validated_data.get("price", instance.price)
             instance.name = validated_data.get("name", instance.name)
+            instance.enabled = validated_data.get("enabled", instance.enabled)
             instance.description = validated_data.get(
                 "description", instance.description
             )
@@ -423,7 +448,7 @@ class ViewHumanImageSerializer(BaseSerializer):
     class Meta:
         model = HumanImage
         fields = [
-            "product_human_images",
+            "enabled",
             "name",
             "price",
             "id",
