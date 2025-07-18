@@ -165,6 +165,7 @@ class HumanImage(TimeStampMixin, CreatorMixin):
         verbose_name="Продукты",
         through="ProductHumanImages",
     )
+    enabled = models.BooleanField(verbose_name="Включен", default=True)
     description = models.TextField(verbose_name="Описание", blank=True, null=True)
     name = models.CharField(
         verbose_name="Название образа", blank=True, null=True, max_length=255
