@@ -7,14 +7,14 @@ RUN apk update \
     && apk add --no-cache \
     curl \
     && rm -rf /var/cache/apk/* \
-    && curl -sSL 'https://install.python-poetry.org' | python3 - --version 1.7.1
+    && curl -sSL 'https://install.python-poetry.org' | python3 - --version 2.1.3
 
 ENV PATH="/root/.local/bin:$PATH"
 
 WORKDIR /app
 
 COPY pyproject.toml poetry.lock ./
-RUN poetry install --no-ansi --no-interaction --no-dev
+RUN poetry install --no-ansi --no-interaction --only main --no-root
 
 COPY . .
 
