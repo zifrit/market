@@ -6,9 +6,10 @@ class ImagesStatusHistory(BaseModel):
     status: str
     dt: datetime
     entity_id: int
+    user_id: int
 
     def to_kafka(self):
-        return f"('{self.status}', '{self.dt.strftime('%Y-%m-%d %H:%M:%S')}', '{self.entity_id}'),"
+        return f"('{self.status}', '{self.dt.strftime('%Y-%m-%d %H:%M:%S')}', '{self.entity_id}', '{self.user_id}'),"
 
     @staticmethod
     def topic_name():
