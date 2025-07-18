@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db.models import Avg, Count, Prefetch
 from drf_spectacular.utils import (
     extend_schema,
@@ -9,6 +11,10 @@ from rest_framework.response import Response
 
 from clo.permission import CustomBasePermission
 from context import swagger_json
+from frameworks.ch_tables import ObjViews
+from frameworks.ch_tables.obj_views import ObjTypes
+from frameworks.ch_tables.tables import Tables
+from frameworks.kafak.client import KafkaLogSender
 from shop.models import Shop, ShopRating, ShopWorkSchedules, ShopReport, ShopImages
 from rest_framework import generics, status, mixins
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
@@ -74,6 +80,12 @@ class ShopViewSet(CustomModelViewSet, CustomBasePermission):
 
     @extend_schema(request=ShowShopSerializer)
     def retrieve(self, request, *args, **kwargs):
+        data = ObjViews(
+            obj=ObjTypes.SHOP,
+            dt=datetime.now(),
+            entity_id=kwargs.get("pk"),
+        )
+        KafkaLogSender.save_table_data([data], Tables.OBJ_VIEWS)
         return super().retrieve(request, *args, **kwargs)
 
     @extend_schema(

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParameter
 from rest_framework import generics
 from rest_framework.response import Response
@@ -5,6 +7,7 @@ from rest_framework.response import Response
 from clo.permission import (
     CustomBasePermission,
 )
+from frameworks.ch_tables.obj_views import ObjTypes
 from shop.filters import ProductFilter
 from shop.models import (
     Product,
@@ -18,7 +21,9 @@ from shop.models import (
     ProductImages,
     HumanImageImages,
 )
-from rest_framework.viewsets import ModelViewSet
+from frameworks.ch_tables import ObjViews
+from frameworks.ch_tables.tables import Tables
+from frameworks.kafak.client import KafkaLogSender
 from shop.api.serializers import (
     ProductSerializers,
     BrandsSerializer,
@@ -77,6 +82,12 @@ class ProductViewSet(CustomModelViewSet, CustomBasePermission):
         ]
     )
     def retrieve(self, request, *args, **kwargs):
+        data = ObjViews(
+            obj=ObjTypes.PRODUCT,
+            dt=datetime.now(),
+            entity_id=kwargs.get("pk"),
+        )
+        KafkaLogSender.save_table_data([data], Tables.OBJ_VIEWS)
         return super().retrieve(request, *args, **kwargs)
 
     @extend_schema(
@@ -189,6 +200,12 @@ class UpdateDeleteHumanImageView(
         examples=[OpenApiExample("get example", value=swagger_json.human_images)]
     )
     def get(self, request, *args, **kwargs):
+        data = ObjViews(
+            obj=ObjTypes.HUMANIMAGES,
+            dt=datetime.now(),
+            entity_id=kwargs.get("pk"),
+        )
+        KafkaLogSender.save_table_data([data], Tables.OBJ_VIEWS)
         result = super().get(request, *args, **kwargs)
         return result
 

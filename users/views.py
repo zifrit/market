@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db.models import Avg
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework.permissions import AllowAny
@@ -9,6 +11,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from clo.pagination import CustomPagination
 from context import swagger_json
+from frameworks.ch_tables import AddToFavorites
+from frameworks.ch_tables.tables import Tables
+from frameworks.kafak.client import KafkaLogSender
 from shop.api.serializers import ViewProductSerializers
 from shop.models import Product, CustomUserFavoriteProduct, Shop
 from users.models import CustomUser
@@ -175,7 +180,15 @@ class CreateViewUserFavoriteView(generics.ListCreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         user_id = self.request.user.id
-        CustomUserFavoriteProduct.objects.create(user_id=user_id, product_id=product_id)
+        _, created = CustomUserFavoriteProduct.objects.get_or_create(
+            user_id=user_id, product_id=product_id
+        )
+        if created:
+            data = AddToFavorites(
+                dt=datetime.now(),
+                entity_id=product_id,
+            )
+            KafkaLogSender.save_table_data([data], Tables.ADD_TO_FAVORITES)
         return Response(status=status.HTTP_200_OK)
 
     @extend_schema(
