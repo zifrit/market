@@ -1,2 +1,4 @@
 from .images_status_history_handler import ImagesStatusHistoryHandler
 from .product_status_history_handler import ProductStatusHistoryHandler
+from .obj_views import ObjViewsHandler
+from .add_to_favorites import AddToFavoritesHandler

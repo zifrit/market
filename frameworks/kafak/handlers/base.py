@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 from functools import reduce
-from typing import List
+
+from pydantic import BaseModel
 
 
 class AbstractHandler(ABC):
 
     @abstractmethod
-    def processing(self, x: str, y: dict):
+    def processing(self, x: str, y: BaseModel):
         raise NotImplementedError()
 
     def convertor_func(self, entities: list) -> str:
